@@ -1,0 +1,1751 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#7c2340">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Family FlashLine — Family Lockdown Alert">
+<meta name="application-name" content="Family FlashLine — Family Lockdown Alert">
+<meta name="description" content="Family FlashLine — Family lockdown alert. Tap a reason. Text your family. Done.">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="data:,">
+<title>Family FlashLine — Family Lockdown Alert | Tap a reason. Text your family. Done.</title>
+<style>
+:root{
+  --bg:#fff7f2; --surface:#ffffff; --surface2:#fff3e8; --ink:#332027; --muted:#7d676e; --line:#f1ddd4;
+  --love:#b83256; --love-deep:#7c2340; --love-bg:#fff0f1; --love-soft:#fde8e4;
+  --red:#c1271f; --red-bg:#fdf0ef; --red-ink:#7a130e;
+  --amber:#8a5a00; --amber-bg:#fff6d6;
+  --orange:#9a3f00; --orange-bg:#fff1e6;
+  --dark-bg:#2b2b2b; --dark-ink:#ffffff;
+  --green:#177052; --green-bg:#eaf7ed;
+  --blue:#7c2340; --blue-bg:#fff0f1;
+  --btn-radius:20px;
+  /* Colour system — one hue per job, so you recognise it before you read it:
+     RED / burgundy = danger & family love, YELLOW = look here / start here,
+     TEAL = learn & set up (the exact opposite of red on the colour wheel —
+     that clash is why your eye cannot skip it), GREEN = safe / all clear.
+     URGENCY LADDER on the alert buttons — the colour FEELS like the message:
+     the higher the danger, the hotter, harder and louder the colour (thick
+     borders, red glow, pulsing send button); the safer the message, the
+     softer and quieter it gets (pastel mint for I'm SAFE, pale sky for
+     All clear, gentle shadow, no pulse at all). */
+  --urg-critical:#e10600; --urg-bomb-border:#e10600; --urg-help:#ff4a08; --urg-fight:#ee7b00;
+  --urg-safe-bg:#cdeedb; --urg-safe-ink:#17452f; --urg-safe-line:#8fbfa5;
+  --urg-clear-bg:#dcecf7; --urg-clear-ink:#1d3f55; --urg-clear-line:#9dbfd6;
+  --teal:#0a6e6e; --teal-deep:#074f4f; --teal-bright:#0e8a8a; --teal-bg:#e6f7f5; --teal-ink:#e8fffc;
+  --yellow:#ffcf3f; --yellow-strong:#ffd21a; --yellow-ink:#1a1500;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#1d1417; --surface:#2a1e22; --surface2:#33241f; --ink:#fbf1ec; --muted:#cdb4b8; --line:#443237; --love:#e88aa4; --love-deep:#f3b3c4; --love-bg:#382128; --love-soft:#382128; --red-bg:#3a1714; --red-ink:#ffb4ab; --amber-bg:#332a0f; --orange-bg:#331f0f; --green-bg:#12351d; --blue-bg:#382128; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html[data-text="large"]{font-size:20px}
+html[data-text="xlarge"]{font-size:25px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family: ui-sans-system, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;line-height:1.45;overflow-wrap:break-word}
+/* Large-text / Dynamic Type safety: nothing truncates, buttons wrap and grow.
+   Labels wrap BETWEEN words only — never mid-word (no "Shoot/er", "camp/us"). */
+.alert-btn,.btn,.emergency a{white-space:normal;word-break:normal}
+.alert-btn .title,.alert-btn .sub{overflow-wrap:break-word;word-break:normal;hyphens:none}
+.alert-btn>span:last-child{flex:1 1 auto;min-width:0}
+@media (max-width:420px){.emergency{flex-direction:column;align-items:stretch}.emergency a{text-align:center}}
+.text-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 10px;margin:12px 0}
+.text-controls span{font-size:.82rem;font-weight:700;color:var(--muted);margin-left:6px}
+.text-controls button{appearance:none;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:8px 13px;font-weight:800;cursor:pointer;min-height:44px}
+.text-controls button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ios-hint{display:none;background:#fff3cd;color:#5c4300;border:1px solid #e6b800;border-radius:12px;padding:11px 13px;font-size:.88rem;line-height:1.45;margin-top:10px}
+@media (prefers-color-scheme: dark){.ios-hint{background:#332a0f;color:#ffd97a}}
+.ios-hint.show{display:block}
+.ios-hint strong{color:inherit}
+.platform-pill{display:block;width:fit-content;position:relative;z-index:2;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--muted);margin-top:6px}
+a{color:var(--blue)}
+.topbar{background:var(--love-deep);color:#fff;padding:14px 16px;display:flex;gap:12px;align-items:center;border-bottom:5px solid var(--yellow);box-shadow:0 4px 18px rgba(124,35,64,.35)}
+.topbar .heart-badge{width:44px;height:44px;background:var(--yellow);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3125rem;flex:0 0 auto;color:var(--love-deep);box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.topbar h1{margin:0;font-size:1.375rem;line-height:1.05;letter-spacing:-.02em}
+.topbar .brand-subtitle{margin:4px 0 0;color:var(--yellow);font-size:1.0312rem;font-weight:900;line-height:1.2;letter-spacing:.01em}
+.topbar p{margin:3px 0 0;color:#ffe3e7;font-size:0.8438rem;line-height:1.35}
+.brand-line{font-size:0.9375rem;line-height:1.4;color:var(--ink)}
+.brand-line strong{font-size:1.0312rem;color:var(--ink)}
+.brand-line .brand-line-sub{font-weight:800;color:var(--love-deep)}
+@media (prefers-color-scheme: dark){.brand-line .brand-line-sub{color:var(--love)}}
+.wrap{max-width:720px;margin:0 auto;padding:10px 16px 32px}
+.lede{font-size:0.875rem;color:var(--muted);margin:4px 0 10px}
+.lede strong{color:var(--ink)}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px;margin:14px 0;box-shadow:0 8px 28px rgba(51,32,39,.10)}
+#alerts{border:2.5px solid #e8c4b8;box-shadow:0 12px 34px rgba(124,35,64,.16)}
+#alerts-h{font-size:1.3125rem;font-weight:900;letter-spacing:-.02em}
+.card h2{margin:0 0 4px;font-size:1.125rem;letter-spacing:-.01em}
+.card h3{margin:18px 0 8px;font-size:1rem}
+.hint{font-size:0.8125rem;color:var(--muted);margin:4px 0 12px}
+label{display:block;font-size:0.9062rem;font-weight:700;color:var(--ink);margin:14px 0 6px}
+label:first-of-type{margin-top:4px}
+label .opt{font-weight:500;color:var(--muted);font-size:0.8438rem}
+input, textarea{width:100%;padding:14px 15px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font-size:1.0625rem}
+input:focus, textarea:focus{outline:3px solid rgba(184,50,86,.22);border-color:var(--love)}
+/* No double-tap zoom on taps, and fields keep breathing room at the top when brought into view */
+.alert-btn,.btn,.qa-chip,.r-chip,.guide-cta,.contact-remove,.allclear-btn,.text-controls button{touch-action:manipulation}
+input,textarea{scroll-margin-top:12px}
+/* Warm, short setup */
+.setup-card{border:3px solid var(--teal);background:linear-gradient(180deg,var(--teal-bg),var(--surface) 118px);padding:20px 18px;box-shadow:0 10px 28px rgba(10,110,110,.22)}
+@media (prefers-color-scheme: dark){.setup-card{background:var(--surface)}}
+.setup-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:6px}
+.setup-heart{width:44px;height:44px;flex:0 0 auto;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.25rem;border:2.5px solid var(--teal-deep);box-shadow:0 3px 10px rgba(10,110,110,.35)}
+.setup-head h2{font-size:1.25rem;line-height:1.2}
+.setup-head .hint{margin:2px 0 0;font-size:0.875rem;line-height:1.45}
+.setup-grid{margin-top:4px}
+.setup-grid label{margin-top:10px}
+.trust-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.trust-row span{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 11px;font-size:0.8125rem;font-weight:700}
+.trust-row span b{color:var(--love);font-weight:900;margin-right:2px}
+.optional-room{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+.optional-room summary{cursor:pointer;font-weight:700;font-size:0.9062rem;color:var(--love);min-height:32px}
+.optional-room label{margin-top:8px}
+.friendly{line-height:1.45}
+.warm-lede{font-size:1rem;line-height:1.55;color:var(--ink)}
+.warm-lede strong{color:var(--love-deep)}
+@media (prefers-color-scheme: dark){.warm-lede strong{color:var(--love)}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+/* Alert buttons */
+.alerts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+/* Phone: keep two columns so all six reasons stay in the first screenful — no scrolling to find one */
+@media(max-width:560px){.alerts{gap:8px}.alert-btn{min-height:94px;padding:12px 10px;gap:8px}.alert-btn .title{font-size:1.125rem;line-height:1.12}.alert-btn .sub{font-size:0.7812rem}.alert-btn .icon{width:28px;height:28px;flex:0 0 28px;font-size:0.875rem;margin-top:2px}}
+@media(max-width:380px){.alert-btn{padding:11px 9px;gap:7px}.alert-btn .title{font-size:1.0312rem}.alert-btn .icon{width:24px;height:24px;flex:0 0 24px;font-size:0.75rem}}
+.alert-btn{appearance:none;border:2.5px solid rgba(0,0,0,.28);border-radius:var(--btn-radius);padding:18px 16px;text-align:left;cursor:pointer;min-height:104px;display:flex;gap:12px;align-items:flex-start;width:100%;box-shadow:0 7px 18px rgba(51,32,39,.24),inset 0 1px 0 rgba(255,255,255,.28)}
+.alert-btn:active{transform:scale(.98)}
+.alert-btn .kicker{font-size:0.6875rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase;opacity:.95}
+.alert-btn .title{font-size:1.375rem;font-weight:900;line-height:1.1;display:block;margin:2px 0 4px;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.alert-btn .sub{font-size:0.8438rem;line-height:1.35;opacity:.95;display:block;font-weight:600}
+.alert-btn .icon{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:rgba(255,255,255,.94);color:#111;display:flex;align-items:center;justify-content:center;font-size:0.9375rem;margin-top:1px;box-shadow:0 2px 8px rgba(0,0,0,.25);border:2px solid rgba(0,0,0,.18)}
+/* — The urgency ladder, hottest at the top —
+   CRITICAL (Shooter): searing solid red, thickest dark border, red glow. */
+.alert-btn.red{background:linear-gradient(180deg,#f01408,#b30000);color:#fff;border:3.5px solid #4d0200;box-shadow:0 10px 24px rgba(225,6,0,.48),0 0 0 3px rgba(225,6,0,.22),inset 0 1px 0 rgba(255,255,255,.35)}
+/* CRITICAL (Bomb): near-black with a burning red ring — just as alarming, unmistakably different. */
+.alert-btn.dark{background:linear-gradient(180deg,#292420,#0b0a09);color:#fff;border:3.5px solid var(--urg-bomb-border);box-shadow:0 10px 24px rgba(0,0,0,.55),0 0 0 3px rgba(225,6,0,.28),inset 0 1px 0 rgba(255,255,255,.18)}
+.alert-btn.dark .icon{background:var(--urg-critical);color:#fff;border-color:#ffd9d4}
+/* URGENT (Need HELP): solid blazing orange-red — a personal call for help
+   must shout, never sit pale and faint like it used to. */
+.alert-btn.outline{background:linear-gradient(180deg,#ff5c14,#e83e00);color:#fff;border:3px solid #7a1e00;box-shadow:0 9px 22px rgba(255,74,8,.46),0 0 0 3px rgba(255,74,8,.20),inset 0 1px 0 rgba(255,255,255,.32)}
+.alert-btn.outline .icon{background:#fff;color:#d63a00;border-color:#fff;font-weight:900}
+.alert-btn.outline .sub{color:#fff;opacity:.97}
+/* SERIOUS (Fight): strong alarming orange — hot, but a step below HELP's red-orange. */
+.alert-btn.orange{background:linear-gradient(180deg,#f68700,#de6a00);color:#fff;border-color:#7a3800;box-shadow:0 8px 20px rgba(238,123,0,.42),inset 0 1px 0 rgba(255,255,255,.30)}
+/* CAUTION (Don't know why): bright yellow — impossible to miss, not aggressive. */
+.alert-btn.amber{background:linear-gradient(180deg,#ffd94a,#ffc61a);color:#1a1500;border-color:#8a6d00;box-shadow:0 7px 18px rgba(230,184,0,.38),inset 0 1px 0 rgba(255,255,255,.5)}
+.alert-btn.amber .icon{background:#1a1500;color:var(--yellow);border-color:#1a1500}
+/* COMFORT (I'm SAFE): soft pastel mint, thin gentle border, small quiet
+   shadow, no text shadow — it should feel like breathing out. */
+.alert-btn.green{background:linear-gradient(180deg,#e4f6ec,var(--urg-safe-bg));color:var(--urg-safe-ink);border:2px solid var(--urg-safe-line);box-shadow:0 4px 12px rgba(31,110,74,.16),inset 0 1px 0 rgba(255,255,255,.7)}
+.alert-btn.green .icon{background:#fff;color:#2e7d5b;border-color:var(--urg-safe-line)}
+.alert-btn.green .title{text-shadow:none}
+/* Selected state: only the last-tapped reason shows as chosen — and the
+   selection ring keeps the button's own temperature: hard dark ring on the
+   hot buttons, a soft green halo on I'm SAFE. */
+.alert-btn.is-selected{outline:4px solid var(--ink);outline-offset:2px}
+.alert-btn.red.is-selected,.alert-btn.dark.is-selected,.alert-btn.orange.is-selected,.alert-btn.outline.is-selected{outline-color:rgba(255,255,255,.9);box-shadow:0 0 0 6px var(--ink)}
+.alert-btn.amber.is-selected{outline-color:#1a1500;box-shadow:0 0 0 6px rgba(26,21,0,.25)}
+.alert-btn.green.is-selected{outline-color:#2e7d5b;box-shadow:0 0 0 5px rgba(46,125,91,.35)}
+/* Double-confirm state for the good-news buttons (I'm SAFE / All clear): calm, deliberate, no urgency */
+.alert-btn.confirming{outline:4px dashed currentColor;outline-offset:3px}
+.allclear-btn.is-selected{outline:4px solid #3e6e8e;outline-offset:2px}
+.confirm-note{display:none;background:var(--green-bg);border:1.5px solid var(--green);color:var(--ink);border-radius:14px;padding:12px 14px;font-size:0.9062rem;line-height:1.5;margin-top:12px}
+.confirm-note.show{display:block}
+.confirm-note strong{color:var(--green)}
+/* Calm All clear zone — the softest spot on the page: pale sky blue,
+   deliberately separated from the urgent lockdown grid, nothing hot or
+   loud anywhere near it. Fixed light colours (not theme vars) so the text
+   stays readable on the pastel in light AND dark mode. */
+.calm-zone{margin-top:18px;border:2.5px solid var(--urg-clear-line);background:linear-gradient(180deg,#eff7fb,#deeff7);border-radius:18px;padding:16px;box-shadow:0 4px 14px rgba(70,120,160,.14)}
+.calm-zone .calm-kicker{font-size:0.75rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#3e6e8e}
+.allclear-btn{box-shadow:0 3px 10px rgba(70,120,160,.14)}
+.allclear-btn .icon{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:#7faed1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9375rem;border:2px solid #5e8fb3}
+.calm-zone p{font-size:0.8438rem;color:#2e4a5c;margin:4px 0 12px;line-height:1.5}
+.allclear-btn{appearance:none;width:100%;border:2px solid var(--urg-clear-line);background:#f7fbfd;color:var(--urg-clear-ink);border-radius:var(--btn-radius);padding:16px 14px;text-align:left;cursor:pointer;min-height:72px;display:flex;gap:12px;align-items:flex-start;font:inherit}
+.allclear-btn .title{font-size:1.125rem;font-weight:800;line-height:1.15;display:block;margin:0 0 4px}
+.allclear-btn .sub{font-size:0.8438rem;line-height:1.35;color:#4a6b80;display:block}
+.allclear-btn.confirming{background:#8fbfdc;color:#123043;border-style:dashed;border-color:#fff;outline:4px solid #5e8fb3;outline-offset:3px}
+.allclear-btn.confirming .sub{color:#23465e}
+.icon{font-size:1.375rem;line-height:1;flex:0 0 auto;margin-top:2px}
+.preview{background:#2e1a21;color:#fff;border:3px solid #1a0d11;border-radius:18px;padding:16px;margin-top:16px;box-shadow:0 10px 28px rgba(46,26,33,.35),0 0 0 3px var(--yellow)}
+/* The preview — and the Text family now button inside it — take on the
+   temperature of the message you picked: hot ring and a red send button
+   for a shooter, soft green ring and a still, un-pulsing mint send button
+   for I'm SAFE, pale blue calm for All clear. */
+#previewBox[data-urgency="critical"]{background:#2b0603;border-color:#5c0802;box-shadow:0 10px 28px rgba(225,6,0,.35),0 0 0 3px var(--urg-critical)}
+#previewBox[data-urgency="critical"] .btn-direct{background:var(--urg-critical);color:#fff}
+#previewBox[data-urgency="urgent"]{background:#311303;border-color:#5c2400;box-shadow:0 10px 28px rgba(255,74,8,.32),0 0 0 3px var(--urg-help)}
+#previewBox[data-urgency="urgent"] .btn-direct{background:var(--urg-help);color:#fff}
+#previewBox[data-urgency="serious"]{background:#2e1e08;border-color:#4d2f00;box-shadow:0 10px 28px rgba(238,123,0,.30),0 0 0 3px var(--urg-fight)}
+#previewBox[data-urgency="serious"] .btn-direct{background:var(--urg-fight);color:#fff}
+#previewBox[data-urgency="safe"]{background:#142e24;border-color:#0b1f18;box-shadow:0 8px 22px rgba(20,80,55,.28),0 0 0 3px var(--urg-safe-line)}
+#previewBox[data-urgency="safe"] .btn-direct{background:#bfe8d2;color:#143d2a;border-color:#e6f7ee;animation:none}
+#previewBox[data-urgency="clear"]{background:#162a38;border-color:#0d1b26;box-shadow:0 8px 22px rgba(50,100,140,.25),0 0 0 3px #8fbfdc}
+#previewBox[data-urgency="clear"] .btn-direct{background:#c4dff2;color:#17384e;border-color:#eef7fd;animation:none}
+.preview label{color:#a8a29e;margin-top:0}
+.preview-text{font-family: ui-monospace, SFMono-Regular, Menlo, monospace;font-size:0.9688rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.08);padding:12px;border-radius:10px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{appearance:none;border:0;border-radius:999px;padding:12px 16px;font-weight:700;font-size:0.9375rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:#fff;color:#111}
+.btn-secondary{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.btn-light{background:var(--ink);color:var(--bg)}
+.btn-ghost{background:var(--bg);color:var(--ink);border:1.5px solid var(--line)}
+.btn-full{width:100%;padding:15px;font-size:1rem}
+.note{border-left:4px solid #e6b800;background:var(--surface2);padding:12px 14px;border-radius:0 12px 12px 0;font-size:0.875rem;margin:12px 0}
+.note strong{color:var(--ink)}
+.do-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.do-grid{grid-template-columns:1fr}}
+.do-box{border:1px solid var(--line);border-radius:14px;padding:14px}
+.do-box h3{margin-top:0}
+ul.tight{margin:8px 0 0 18px;padding:0} ul.tight li{margin:6px 0;font-size:0.9062rem}
+table{width:100%;border-collapse:collapse;font-size:0.9062rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:0.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+code{background:var(--bg);padding:2px 6px;border-radius:6px;font-weight:700}
+.small{font-size:0.8125rem;color:var(--muted)}
+.footer{font-size:0.8125rem;color:var(--muted);text-align:center;padding:18px 8px 0;line-height:1.6}
+.emergency{background:#fff;color:var(--ink);border:3px solid var(--red);border-radius:16px;padding:12px 14px;display:flex;justify-content:space-between;gap:12px;align-items:center;margin:10px 0;font-size:0.875rem;line-height:1.4;box-shadow:0 6px 20px rgba(193,39,31,.20)}
+@media (prefers-color-scheme: dark){.emergency{background:var(--surface)}}
+.emergency a{color:#fff;font-weight:900;font-size:1.0625rem;text-decoration:none;background:var(--red);padding:13px 20px;border-radius:999px;white-space:nowrap;flex:0 0 auto;border:2px solid #6d0d08;box-shadow:0 4px 14px rgba(193,39,31,.45);letter-spacing:.01em}
+.action-status{font-size:.92rem;font-weight:700;color:#ffe3e7;margin:10px 0 0;min-height:1.25em;line-height:1.45}
+.sms-help{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.45);border-radius:14px;padding:14px;margin-top:12px;color:#fff;font-size:.93rem;line-height:1.55;text-align:left}
+.sms-help[hidden]{display:none}
+.sms-help strong{color:#fff}
+.sms-help ol{margin:8px 0;padding:0 0 0 20px}
+.sms-help li{margin:6px 0}
+.sms-help p{margin:8px 0}
+.sms-help textarea{background:#fff;color:#111;border:0;font-size:1rem;margin-top:4px}
+.paste-steps{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.45);border-radius:14px;padding:14px;margin-top:12px;color:#fff;font-size:.93rem;line-height:1.55;text-align:left}
+.paste-steps strong{color:#fff}
+.paste-steps ol{margin:8px 0;padding:0 0 0 20px}
+.paste-steps li{margin:6px 0}
+.paste-steps p{margin:8px 0}
+.paste-steps textarea{background:#fff;color:#111;border:0;font-size:1rem;margin-top:4px}
+.optional-sms{margin-top:12px;border-top:1px dashed rgba(255,255,255,.35);padding-top:10px}
+.optional-sms summary{cursor:pointer;font-weight:700;font-size:.88rem;color:#e8d5d9;min-height:32px}
+.optional-sms p{font-size:.82rem;color:#e8d5d9}
+.sms-help-small{font-size:.82rem;color:#e8d5d9}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:#111;color:#fff;padding:11px 16px;border-radius:999px;font-size:0.875rem;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:80;max-width:92vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.toast.show{opacity:1}
+.kicker-top{font-size:0.6875rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:var(--love)}
+.open-strip{border:3px solid #1a1500;background:var(--yellow);color:#1a1500;border-radius:16px;padding:12px 14px;margin:12px 0;font-size:0.875rem;line-height:1.45;font-weight:600;box-shadow:0 6px 18px rgba(230,184,0,.35)}
+.open-strip strong{color:#1a1500}
+.open-outside{border:2px solid var(--love);background:var(--love-bg);border-radius:20px;padding:16px 18px;margin:14px 0}
+.open-outside h2{margin:0 0 6px;font-size:1.125rem}
+.open-outside p{font-size:0.9062rem;line-height:1.55;margin:6px 0}
+.btn-direct{background:var(--yellow-strong);color:#111;font-size:1.25rem;font-weight:900;padding:20px 16px;width:100%;border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.35);animation:heartPulse 2.4s ease-out infinite}
+@keyframes heartPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}70%{box-shadow:0 0 0 16px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+@media (prefers-reduced-motion: reduce){.btn-direct{animation:none}}
+/* Step trail: the send is step 3 of 3 — the last, comforting step, named at the top of the card */
+.steps-trail{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 2px;font-size:0.8125rem;font-weight:700}
+.steps-trail .st{background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--muted)}
+.steps-trail .st.last{background:var(--love);border-color:var(--love);color:#fff}
+.steps-trail .arr{color:var(--muted);font-weight:800}
+/* Final-step banner inside the preview: frames the white button as the one that reaches family */
+.final-step{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.1);border:1.5px dashed rgba(255,255,255,.55);border-radius:12px;padding:10px 12px;margin-top:14px;color:#ffe3e7;font-size:0.875rem;line-height:1.45}
+.final-step strong{color:#fff}
+.fallback-details{margin-top:12px;border-top:1px dashed rgba(255,255,255,.35);padding-top:10px}
+.fallback-details summary{cursor:pointer;font-weight:700;font-size:.9rem;color:#ffe3e7;min-height:32px}
+/* One-time setup: slim entry when not set up, one ready line once done */
+[hidden]{display:none !important}
+.setup-state{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.setup-state .setup-heart{flex:0 0 auto}
+.setup-state-text{flex:1 1 220px;min-width:0}
+.setup-state-text strong{display:block;font-size:1.0312rem;line-height:1.25}
+.setup-state-text span{font-size:0.8438rem;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
+.setup-state .btn{flex:0 0 auto}
+.setup-done-bar{border:1.5px solid var(--green);background:var(--green-bg);border-radius:14px;padding:12px 14px}
+.setup-done-bar strong{color:var(--green)}
+.setup-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;position:sticky;bottom:10px;z-index:35;background:#fff;border:3px solid var(--teal);border-radius:16px;padding:10px;box-shadow:0 0 0 3px var(--yellow),0 -4px 18px rgba(0,0,0,.18)}
+@media (prefers-color-scheme: dark){.setup-actions{background:var(--surface)}}
+.setup-actions .btn-full{flex:1 1 100%}
+#setupDoneBtn{background:var(--teal) !important;color:#fff !important;border:2.5px solid var(--teal-deep);font-size:1.0625rem;box-shadow:0 5px 16px rgba(10,110,110,.4)}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;font-size:0.9375rem;font-weight:900;vertical-align:-7px;margin-right:4px;border:2px solid var(--teal-deep);box-shadow:0 2px 6px rgba(10,110,110,.35)}
+.preview-block{background:#7a130e;border:2px solid #ffb4ab;color:#fff;border-radius:12px;padding:12px 14px;margin-top:10px;font-size:0.9375rem;line-height:1.45}
+.preview-block strong{display:block;font-size:1.0312rem}
+.preview-block span{color:#ffd9d4}
+.setup-form-status{font-size:0.875rem;font-weight:700;color:var(--love-deep);margin:12px 0 0;min-height:1.3em;line-height:1.45}
+@media (prefers-color-scheme: dark){.setup-form-status{color:var(--love)}}
+@media(max-width:520px){.setup-state .btn{width:100%}}
+/* Labeled family contacts in setup: one-tap preset chips + simple rows */
+.quick-add{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 4px}
+.quick-add-label{font-size:0.8125rem;font-weight:700;color:var(--muted)}
+.qa-chip{appearance:none;border:2.5px solid var(--teal);background:var(--teal);color:#fff;border-radius:999px;padding:10px 16px;font-weight:900;font-size:0.9062rem;cursor:pointer;min-height:46px;box-shadow:0 3px 10px rgba(10,110,110,.3)}
+@media (prefers-color-scheme: dark){.qa-chip{color:#fff}}
+.qa-chip:active{transform:scale(.98)}
+.contact-row{display:flex;gap:8px;align-items:center;margin-top:10px}
+.contact-row .contact-label{flex:0 0 34%;font-weight:700}
+.contact-row .contact-number{flex:1 1 auto;min-width:0}
+.contact-remove{appearance:none;flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--bg);color:var(--muted);font-size:1.25rem;line-height:1;cursor:pointer}
+@media(max-width:420px){.contact-row{flex-wrap:wrap}.contact-row .contact-label{flex:1 1 100%}.contact-row .contact-number{flex:1 1 auto}}
+/* Recipient picker on the alert screen: labels only — never a phone number */
+.recipient-bar{margin-top:16px;border:2.5px solid var(--love);background:var(--love-bg);border-radius:14px;padding:12px;box-shadow:0 4px 14px rgba(184,50,86,.16)}
+.recipient-bar .recipient-label{font-size:0.75rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--love-deep);display:block;margin-bottom:8px}
+@media (prefers-color-scheme: dark){.recipient-bar .recipient-label{color:var(--love)}}
+.recipient-chips{display:flex;flex-wrap:wrap;gap:8px}
+.r-chip{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 15px;font-weight:800;font-size:0.9375rem;cursor:pointer;min-height:44px}
+.r-chip[aria-pressed="true"]{background:var(--love);border-color:var(--love);color:#fff}
+.r-chip:active{transform:scale(.98)}
+/* Sticky send bar: once a reason and a recipient are chosen, Text family now
+   is ALWAYS within a tap — pinned to the bottom and scrolling with you,
+   never appearing or disappearing based on how far you have scrolled. */
+.sticky-send{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#2e1a21;color:#fff;border-top:5px solid var(--yellow);box-shadow:0 -6px 24px rgba(0,0,0,.35);padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+/* The pinned send bar matches the picked message's urgency too — red-hot
+   for critical, still and soft for safe / all clear (no pulse). */
+.sticky-send[data-urgency="critical"]{background:#2b0603;border-top-color:var(--urg-critical)}
+.sticky-send[data-urgency="critical"] .sticky-btn{background:var(--urg-critical) !important;color:#fff !important}
+.sticky-send[data-urgency="urgent"]{background:#311303;border-top-color:var(--urg-help)}
+.sticky-send[data-urgency="urgent"] .sticky-btn{background:var(--urg-help) !important;color:#fff !important}
+.sticky-send[data-urgency="serious"]{background:#2e1e08;border-top-color:var(--urg-fight)}
+.sticky-send[data-urgency="serious"] .sticky-btn{background:var(--urg-fight) !important;color:#fff !important}
+.sticky-send[data-urgency="safe"]{background:#142e24;border-top-color:var(--urg-safe-line)}
+.sticky-send[data-urgency="safe"] .sticky-btn{background:#bfe8d2 !important;color:#143d2a !important;animation:none}
+.sticky-send[data-urgency="clear"]{background:#162a38;border-top-color:#8fbfdc}
+.sticky-send[data-urgency="clear"] .sticky-btn{background:#c4dff2 !important;color:#17384e !important;animation:none}
+/* While the send bar is pinned, setup's sticky Done bar sits directly
+   above it, so both stay tappable and neither covers the other. */
+body.has-sticky .setup-actions{bottom:128px}
+@media(max-width:420px){body.has-sticky .setup-actions{bottom:218px}}
+.sticky-btn{background:var(--yellow-strong) !important}
+.sticky-send-inner{max-width:720px;margin:0 auto;display:flex;gap:12px;align-items:center}
+.sticky-info{flex:1 1 auto;min-width:0}
+.sticky-info strong{display:block;font-size:0.9688rem;line-height:1.25}
+.sticky-info span{display:block;font-size:0.8125rem;color:#e8d5d9;line-height:1.35;margin-top:1px}
+.sticky-btn{flex:0 0 auto;background:#fff;color:#111;font-size:1.0625rem;padding:15px 18px;box-shadow:0 2px 10px rgba(0,0,0,.3);animation:heartPulse 2.4s ease-out infinite;white-space:normal;text-align:center}
+@media (prefers-reduced-motion: reduce){.sticky-btn{animation:none}}
+@media(max-width:420px){.sticky-send-inner{flex-direction:column;align-items:stretch;gap:8px}.sticky-btn{width:100%}}
+body.has-sticky{padding-bottom:118px}
+@media(max-width:420px){body.has-sticky{padding-bottom:208px}}
+body.has-sticky .toast{bottom:132px}
+@media(max-width:420px){body.has-sticky .toast{bottom:224px}}
+/* The one required thing in setup, marked so a first-time family spots it
+   instantly — steps 1 and 2 say "optional" in words; step 3 gets this. */
+.req-tag{display:inline-block;background:var(--red);color:#fff;font-size:0.7188rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;border-radius:999px;padding:3px 9px;vertical-align:2px;margin-left:6px;border:1.5px solid #6d0d08}
+/* Guide CTA: everything non-emergency lives behind this one clear button.
+   COLOUR THEORY, ON PURPOSE: the whole emergency screen is warm — burgundy,
+   red, orange, cream — so the eye slides over another warm/pale button.
+   This one is TEAL, red's opposite on the colour wheel, ringed in YELLOW
+   (the highest-attention colour). Warm vs cool + dark vs pale + a yellow
+   halo = it registers before a single word is read, even in peripheral
+   vision, even stressed. */
+.guide-wrap{position:relative;margin:30px 0 4px}
+.guide-cta{display:flex;gap:14px;align-items:center;width:100%;text-align:left;appearance:none;background:var(--teal);border:3px solid var(--teal-deep);border-radius:22px;padding:22px 18px 20px;cursor:pointer;color:#fff;min-height:96px;position:relative;box-shadow:0 0 0 5px var(--yellow),0 14px 32px rgba(10,110,110,.45);animation:guidePulse 2.8s ease-out infinite}
+@keyframes guidePulse{0%{box-shadow:0 0 0 5px var(--yellow),0 0 0 5px rgba(255,207,63,.9),0 14px 32px rgba(10,110,110,.45)}70%{box-shadow:0 0 0 5px var(--yellow),0 0 0 18px rgba(255,207,63,0),0 14px 32px rgba(10,110,110,.45)}100%{box-shadow:0 0 0 5px var(--yellow),0 0 0 5px rgba(255,207,63,0),0 14px 32px rgba(10,110,110,.45)}}
+@media (prefers-reduced-motion: reduce){.guide-cta{animation:none}}
+.guide-cta:active{transform:scale(.985)}
+.guide-cta:focus-visible{outline:4px solid #111;outline-offset:4px}
+.guide-cta-badge{position:absolute;top:-15px;left:16px;background:var(--yellow);color:#1a1500;border:2.5px solid #1a1500;border-radius:999px;padding:6px 13px;font-size:0.7812rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.28);white-space:nowrap}
+.guide-cta-icon{flex:0 0 auto;width:60px;height:60px;border-radius:50%;background:var(--yellow);color:#111;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;line-height:1;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.guide-cta-text{flex:1 1 auto;min-width:0}
+.guide-cta-text strong{display:block;font-size:1.5rem;font-weight:900;line-height:1.1;letter-spacing:-.01em;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+.guide-cta-text span{display:block;font-size:0.9062rem;color:var(--teal-ink);line-height:1.45;margin-top:4px;font-weight:600}
+.guide-cta-chev{flex:0 0 auto;width:40px;height:40px;border-radius:50%;background:#fff;color:var(--teal-deep);display:flex;align-items:center;justify-content:center;font-size:1.375rem;font-weight:900;transition:transform .18s ease;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.guide-cta[aria-expanded="true"]{background:var(--teal-deep)}
+.guide-cta[aria-expanded="true"] .guide-cta-chev{transform:rotate(180deg)}
+@media (prefers-reduced-motion: reduce){.guide-cta-chev{transition:none}}
+@media(max-width:420px){.guide-cta-text strong{font-size:1.375rem}.guide-cta{padding:22px 14px 18px;gap:11px}.guide-cta-icon{width:52px;height:52px;font-size:1.75rem;flex-basis:52px}.guide-cta-badge{font-size:0.7188rem;left:12px}}
+#guidePanel{margin-top:14px;border:3px solid var(--teal);border-radius:22px;padding:2px 12px 12px;background:var(--teal-bg);box-shadow:0 10px 30px rgba(10,110,110,.18)}
+@media (prefers-color-scheme: dark){#guidePanel{background:#122e2c}}
+/* Text-size buttons preview their own size, so the jump is visible before you even tap */
+.text-controls button[data-text-size="large"]{font-size:1.15rem}
+.text-controls button[data-text-size="xlarge"]{font-size:1.35rem}
+/* Install card: step 0 of the guide — big numbered steps, one short line each */
+.install-card{border:3px solid var(--yellow);box-shadow:0 10px 28px rgba(230,184,0,.28)}
+.install-card h2{font-size:1.25rem;line-height:1.2}
+.install-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:560px){.install-grid{grid-template-columns:1fr}}
+.install-box{border:2px solid var(--line);border-radius:14px;padding:14px;background:var(--surface2)}
+.install-box h3{margin:0 0 2px;font-size:1.0625rem}
+.install-box .install-sub{font-size:.875rem;color:var(--muted);margin:0 0 10px;font-weight:700}
+.install-you{display:none;background:var(--teal);color:#fff;font-size:.75rem;font-weight:900;letter-spacing:.04em;border-radius:999px;padding:3px 9px;vertical-align:2px;margin-left:6px;white-space:nowrap}
+.install-box.is-yours{border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,110,110,.25)}
+.install-box.is-yours .install-you{display:inline-block}
+.install-steps{list-style:none;margin:0;padding:0}
+.install-steps li{margin:12px 0;font-size:1rem;line-height:1.45}
+.install-steps li:first-child{margin-top:2px}
+.install-steps .step-num{vertical-align:-8px}
+.install-done{margin:12px 0 0;padding-top:10px;border-top:1px dashed var(--line);font-size:.9375rem;line-height:1.45}
+.install-done strong{color:var(--teal-deep)}
+@media (prefers-color-scheme: dark){.install-done strong{color:var(--teal-bright)}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="heart-badge" aria-hidden="true">♥</div>
+  <div>
+    <h1>Family FlashLine</h1>
+    <p class="brand-subtitle">Family lockdown alert</p>
+    <p>Tap a reason. Text your family. Done.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="emergency" role="note">
+    <div><strong>In immediate danger?</strong> <span style="color:var(--muted)">Call 911 first.</span></div>
+    <a href="tel:911">Call 911</a>
+  </div>
+
+  <div class="open-strip" role="note">Open in your phone's browser — buttons work there.</div>
+
+  <!-- ALERTS -->
+  <section class="card" id="alerts" aria-labelledby="alerts-h" style="padding-bottom:18px">
+    <h2 id="alerts-h">Tap one — it texts your family</h2>
+    <p class="hint">Tap once — press <strong>Send</strong> in Messages. <strong>“Don’t know” is okay.</strong></p>
+
+    <div class="alerts" role="group" aria-label="Lockdown alert types">
+      <button class="alert-btn red" data-type="shooter">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Shooter / Weapon</span><span class="sub">Gun or weapon</span></span>
+      </button>
+
+      <button class="alert-btn dark" data-type="bomb">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Bomb threat</span><span class="sub">Bomb or explosive</span></span>
+      </button>
+
+      <button class="alert-btn orange" data-type="fight">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Fight on campus</span><span class="sub">Fight or disturbance</span></span>
+      </button>
+
+      <button class="alert-btn amber" data-type="unknown">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Don’t know why</span><span class="sub">No reason given yet</span></span>
+      </button>
+
+      <button class="alert-btn green" data-type="safe">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Check-in — tap twice</span><span class="title">I’m SAFE</span><span class="sub">Tap twice to send</span></span>
+      </button>
+
+      <button class="alert-btn outline" data-type="help">
+        <span class="icon" aria-hidden="true">!</span>
+        <span><span class="kicker">Urgent</span><span class="title">Need HELP</span><span class="sub">I need help now</span></span>
+      </button>
+    </div>
+
+    <div class="confirm-note" id="confirmNote" role="status" aria-live="polite"></div>
+
+    <div class="recipient-bar" id="recipientBar" hidden>
+      <span class="recipient-label" id="recipientLabel">Send to — pick one</span>
+      <div class="recipient-chips" id="recipientChips" role="group" aria-labelledby="recipientLabel"></div>
+    </div>
+
+    <div class="preview" id="previewBox" aria-live="polite">
+      <label for="previewText">Your message</label>
+      <div class="preview-block" id="previewBlock" role="alert"><strong>Add a family number first.</strong><span>Add one in setup below — step 3. School is optional.</span></div>
+      <div class="preview-text" id="previewText">Add a number to see your message.</div>
+      <p id="senderLine" style="font-size:.82rem;color:#e8d5d9;margin:8px 0 0">No nickname — family knows your number.</p>
+      <div class="final-step"><span aria-hidden="true" style="font-size:1.25rem;line-height:1">♥</span><span><strong>Last step</strong> — tap to text family.</span></div>
+      <div class="actions">
+        <a class="btn btn-direct" id="openBtn" href="sms:">♥ Text family now</a>
+      </div>
+      <p style="font-size:.9rem;color:#ffe3e7;margin:2px 0 0">Opens Messages — press <strong>Send</strong> there.</p>
+      <p class="action-status" id="actionStatus" role="status" aria-live="polite"></p>
+      <details class="fallback-details" id="pasteSteps">
+        <summary>Messages didn’t open? Copy &amp; paste backup</summary>
+        <div class="paste-steps">
+          <ol>
+            <li>Tap <strong>Copy message</strong> below.</li>
+            <li>Open <strong>Messages</strong>, paste, send to family.</li>
+          </ol>
+          <textarea id="manualCopyBox" readonly rows="3" aria-label="Your message — tap it, select all, then copy"></textarea>
+          <div class="actions">
+            <button class="btn btn-secondary" id="helpCopyBtn" type="button">Copy message</button>
+          </div>
+          <p class="sms-help-small">Blank “sms:” page? Press <strong>Back</strong> — your message is still here.</p>
+        </div>
+      </details>
+      <p style="font-size:.82rem;color:#e8d5d9;margin:10px 0 0">Not safe to text? Stay quiet, follow staff.</p>
+    </div>
+
+    <div class="calm-zone">
+      <div class="calm-kicker">When it’s truly over — no rush</div>
+      <p>Tap <strong>twice</strong>. Only when staff say it’s over.</p>
+      <button class="allclear-btn" data-type="allclear" id="allClearBtn" aria-describedby="confirmNote">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="title">All clear — lockdown lifted, I’m okay</span><span class="sub">Tap twice to send</span></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- GUIDE — every step, note and explainer lives behind this one clear button.
+       The emergency screen above is the whole app in the moment: tap a reason,
+       then Text family now. This panel is opened only when calm, at home. -->
+  <div class="guide-wrap">
+  <button class="guide-cta" id="guideToggle" type="button" aria-expanded="false" aria-controls="guidePanel">
+    <span class="guide-cta-badge" aria-hidden="true">★ Start here — do this first</span>
+    <span class="guide-cta-icon" aria-hidden="true">☰</span>
+    <span class="guide-cta-text"><strong>How to set up / use</strong><span>Set up once, at home. Open only when calm.</span></span>
+    <span class="guide-cta-chev" aria-hidden="true">▾</span>
+  </button>
+  </div>
+  <div id="guidePanel" hidden>
+
+  <!-- INSTALL — step 0: put it on the Home Screen first. That is what makes
+       setup save on this device. Two boxes, three taps each, one line a step. -->
+  <section class="card install-card" aria-labelledby="install-h">
+    <h2 id="install-h">Add it to your Home Screen</h2>
+    <p class="hint" style="font-size:.9375rem;color:var(--ink)"><strong>20 seconds. No app store, no download.</strong><br>Do this first — it’s what makes your setup save on this phone.</p>
+    <div class="install-grid">
+      <div class="install-box" id="installIos">
+        <h3>iPhone<span class="install-you">Your phone</span></h3>
+        <p class="install-sub">Open this page in Safari</p>
+        <ol class="install-steps">
+          <li><span class="step-num" aria-hidden="true">1</span> Tap <strong>Share</strong> — the box with an arrow pointing up, at the bottom of Safari.</li>
+          <li><span class="step-num" aria-hidden="true">2</span> Scroll down. Tap <strong>Add to Home Screen</strong>.</li>
+          <li><span class="step-num" aria-hidden="true">3</span> Tap <strong>Add</strong> — top right corner.</li>
+        </ol>
+        <p class="install-done"><strong>Done.</strong> A Family FlashLine icon is now on your Home Screen — open it from there.</p>
+      </div>
+      <div class="install-box" id="installAndroid">
+        <h3>Android<span class="install-you">Your phone</span></h3>
+        <p class="install-sub">Open this page in Chrome or Opera</p>
+        <ol class="install-steps">
+          <li><span class="step-num" aria-hidden="true">1</span> Tap the <strong>menu ⋮</strong> — three dots, top right corner.</li>
+          <li><span class="step-num" aria-hidden="true">2</span> Tap <strong>Add to Home screen</strong> — it may say <strong>Install app</strong>.</li>
+          <li><span class="step-num" aria-hidden="true">3</span> Tap <strong>Add</strong> (or <strong>Install</strong>) to confirm.</li>
+        </ol>
+        <p class="install-done"><strong>Done.</strong> A Family FlashLine icon is now on your Home Screen — open it from there.</p>
+      </div>
+    </div>
+    <p class="small friendly" style="margin-top:12px"><strong>Tablet?</strong> Same steps as your phone above. <strong>Computer?</strong> No Home Screen — just bookmark this page.</p>
+  </section>
+
+  <!-- SETUP — one-time only: a slim entry when not set up, a single ready line once done -->
+  <section class="card setup-card" id="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h" class="small" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Family setup</h2>
+
+    <div class="setup-state" id="setupTeaser">
+      <span class="setup-heart" aria-hidden="true">♥</span>
+      <div class="setup-state-text">
+        <strong>Not set up yet?</strong>
+        <span>Add family numbers. Nickname &amp; school optional.</span>
+      </div>
+      <button class="btn" id="setupOpenBtn" type="button" style="background:var(--teal);color:#fff;border:2.5px solid var(--teal-deep);box-shadow:0 0 0 3px var(--yellow),0 5px 14px rgba(10,110,110,.35);font-size:1rem;padding:14px 18px">Set up once — 30 seconds →</button>
+    </div>
+
+    <div class="setup-state setup-done-bar" id="setupDoneBar" hidden>
+      <span class="setup-heart" aria-hidden="true" style="background:var(--green)">♥</span>
+      <div class="setup-state-text">
+        <strong id="setupDoneText">Ready — setup done</strong>
+        <span id="setupDoneSub">Tucked away. Use the buttons above.</span>
+      </div>
+      <button class="btn btn-ghost" id="setupEditBtn" type="button">Edit setup</button>
+    </div>
+
+    <div id="setupFormWrap" hidden>
+    <div class="setup-head">
+      <span class="setup-heart" aria-hidden="true">♥</span>
+      <div>
+        <h2 style="font-size:1.25rem;line-height:1.2;margin:0 0 4px">Set up — just 3 things</h2>
+        <p class="hint">At home, when calm. Then tap <strong>Done</strong> below.</p>
+      </div>
+    </div>
+
+    <div class="setup-grid">
+      <div>
+        <label for="fName"><span class="step-num" aria-hidden="true">1</span> Family nickname <span class="opt">— optional · not a real name · added to every alert</span></label>
+        <input id="fName" type="text" placeholder="e.g. Bug, Little Bear" autocomplete="nickname">
+      </div>
+      <div>
+        <label for="fSchool"><span class="step-num" aria-hidden="true">2</span> Your school <span class="opt">— optional</span></label>
+        <input id="fSchool" type="text" placeholder="e.g. Kea‘au High School">
+      </div>
+    </div>
+
+    <label id="contactsLabel"><span class="step-num" aria-hidden="true">3</span> Family numbers <span class="req-tag">Required — the one must-have</span> <span class="opt">— one is enough</span></label>
+    <div class="quick-add" role="group" aria-label="Add a family contact in one tap">
+      <span class="quick-add-label">Add in 1 tap:</span>
+      <button type="button" class="qa-chip" data-add-contact="Mom">+ Mom</button>
+      <button type="button" class="qa-chip" data-add-contact="Dad">+ Dad</button>
+      <button type="button" class="qa-chip" data-add-contact="Grandma">+ Grandma</button>
+      <button type="button" class="qa-chip" data-add-contact="Grandpa">+ Grandpa</button>
+      <button type="button" class="qa-chip" data-add-contact="Other family">+ Other family</button>
+    </div>
+    <div id="contactsList" role="group" aria-labelledby="contactsLabel"></div>
+    <input id="fPhones" type="hidden">
+    <p class="setup-form-status" id="setupFormStatus" role="status" aria-live="polite"></p>
+    <div class="setup-actions">
+      <button class="btn btn-light btn-full" id="setupDoneBtn" type="button">Done — I’m ready</button>
+      <button class="btn btn-ghost" id="setupHideBtn" type="button">Hide for now</button>
+      <button class="btn btn-ghost" id="setupClearBtn" type="button">Clear saved setup</button>
+    </div>
+    </div>
+  </section>
+
+  <!-- GOOD TO KNOW — every explainer lives here, AFTER setup, inside the guide
+       panel only. Nothing in this card ever sits between a setup field and Done. -->
+  <section class="card" aria-labelledby="know-h">
+    <h2 id="know-h" style="font-size:1rem">Good to know — only when calm</h2>
+    <p class="hint" id="saveModeLine" style="font-weight:700;color:var(--ink)"></p>
+    <p class="small friendly" style="margin-top:6px;background:var(--amber-bg);border:1px solid #e6b800;border-radius:10px;padding:9px 11px;color:var(--ink)"><strong>Nickname only — not a real name.</strong> Only family should recognize it.</p>
+    <p class="small friendly" style="margin-top:8px"><strong>All family</strong> is picked for you. Tap to pick just Mom or Dad instead.</p>
+    <p class="small friendly" style="margin-top:6px"><strong>Private:</strong> alert screen shows names only — never numbers.</p>
+
+    <details class="optional-room">
+      <summary>Add your room / building (optional)</summary>
+      <label for="fRoom">Room / building <span class="opt">— optional</span></label>
+      <input id="fRoom" type="text" placeholder="e.g. Rm 204, Bldg B">
+    </details>
+
+    <div class="trust-row" aria-label="How this keeps you safe">
+      <span><b>♥</b> No account</span>
+      <span><b>♥</b> Nothing uploaded</span>
+      <span><b>♥</b> No app to install</span>
+      <span><b>♥</b> iPhone &amp; Android</span>
+    </div>
+    <div class="note" role="note" aria-label="What is saved" style="margin-top:14px">
+      <strong>What’s saved:</strong> Home Screen — nickname, school &amp; numbers stay on this device only. Never uploaded.<br>
+      Browser — nothing saved. Refresh clears it.
+    </div>
+    <span class="platform-pill" id="platformPill">Getting your phone ready…</span>
+    <div class="ios-hint" id="iosGroupHint"><strong>iPhone tip:</strong> Group text opens blank? Go back, tap the reason again.</div>
+    <p class="small friendly" style="margin-top:10px"><strong>Clear saved setup</strong> (above) removes everything from this device.</p>
+  </section>
+
+  <div class="text-controls" role="group" aria-label="Text size">
+    <span>Text size:</span>
+    <button type="button" data-text-size="normal" aria-pressed="true">A Normal</button>
+    <button type="button" data-text-size="large" aria-pressed="false">A+ Large</button>
+    <button type="button" data-text-size="xlarge" aria-pressed="false">A++ Extra large</button>
+  </div>
+
+  <!-- MORE — everything else is optional, collapsed, out of the way -->
+  <section class="card" id="more" aria-labelledby="more-h">
+    <h2 id="more-h" style="font-size:1rem">More — only if you want it</h2>
+    <p class="hint" style="margin-bottom:6px">Optional only — not needed in an emergency.</p>
+
+    <details class="optional-room">
+      <summary>Family code words</summary>
+      <p class="small" style="margin-top:8px">Pick together at home. Keep them private.</p>
+      <table aria-label="Suggested family code words">
+        <thead><tr><th>If you text this…</th><th>It means</th></tr></thead>
+        <tbody>
+          <tr><td><code>SHOOTS</code></td><td>Shooter / weapon threat</td></tr>
+          <tr><td><code>EXPLOSIVE</code></td><td>Bomb threat</td></tr>
+          <tr><td><code>SCRAP</code></td><td>Fight / disturbance on campus</td></tr>
+          <tr><td><code>LOCKED ?</code></td><td>In lockdown, don’t know the reason yet</td></tr>
+          <tr><td><code>SAFE</code></td><td>I’m safe right now</td></tr>
+          <tr><td><code>HELP</code></td><td>I need help now</td></tr>
+          <tr><td><code>CLEAR</code></td><td>Lockdown lifted, I’m okay</td></tr>
+        </tbody>
+      </table>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn btn-light" id="copySheetBtn">Copy the family sheet</button>
+        <button class="btn btn-ghost" id="downloadSheetBtn">Download sheet (.txt)</button>
+      </div>
+    </details>
+
+    <details class="optional-room">
+      <summary>Stay safe — the short rules</summary>
+      <ul class="tight">
+        <li>Follow staff first. Stay quiet, stay put.</li>
+        <li>Share only what you know. Never a rumor.</li>
+        <li>Don’t post your location publicly. Family only.</li>
+        <li>Family: reply once — <em>“Got it. I’m here.”</em> Don’t go to campus unless officials say to.</li>
+      </ul>
+      <p class="small" style="margin-top:10px">Family only. Doesn’t contact school or police, or replace 911.</p>
+    </details>
+
+    <details class="optional-room">
+      <summary>Home Screen, watch &amp; car</summary>
+      <p style="font-size:.94rem;line-height:1.6;margin:8px 0 0"><strong>Phone &amp; tablet:</strong> Steps are at the top of this guide — <strong>“Add it to your Home Screen.”</strong></p>
+      <p style="font-size:.94rem;line-height:1.6;margin:8px 0 0"><strong>Watch &amp; car:</strong> Nothing to set up — alerts are normal texts, so they mirror automatically.</p>
+    </details>
+  </section>
+
+  <p class="footer"><span class="brand-line"><strong>Family FlashLine</strong> — <span class="brand-line-sub">Family lockdown alert</span></span><br>Made with ♥ for families. You always press Send.</p>
+  </div><!-- /guidePanel -->
+</div>
+
+<div class="sticky-send" id="stickySend" hidden role="region" aria-label="Ready to send">
+  <div class="sticky-send-inner">
+    <div class="sticky-info">
+      <strong>Ready — tap to send.</strong>
+      <span id="stickySub">Tap to text family.</span>
+    </div>
+    <a class="btn sticky-btn" id="stickyBtn" href="#">♥ Text family now</a>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  var els = {
+    name: document.getElementById('fName'),
+    school: document.getElementById('fSchool'),
+    room: document.getElementById('fRoom'),
+    phones: document.getElementById('fPhones'),
+    preview: document.getElementById('previewText'),
+    toast: document.getElementById('toast')
+  };
+  var currentType = 'unknown';
+  var currentMsg = '';
+  var selectedRecipientKey = 'all';
+  var hasPickedReason = false;
+
+  var TEMPLATES = {
+    shooter: { label: 'Shooter threat', prefix: 'LOCKDOWN' },
+    bomb: { label: 'Bomb threat', prefix: 'LOCKDOWN' },
+    fight: { label: 'Fight / disturbance', prefix: 'LOCKDOWN' },
+    unknown: { label: 'Unknown reason', prefix: 'LOCKDOWN' },
+    safe: { label: null, prefix: "I'M SAFE" },
+    help: { label: null, prefix: 'NEED HELP' },
+    allclear: { label: null, prefix: 'ALL CLEAR - Lockdown lifted' }
+  };
+
+  function nowStr(){
+    try{
+      return new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+    }catch(e){
+      var d=new Date(); return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
+    }
+  }
+  function val(el, fallback){ var v=(el.value||'').trim(); return v||fallback; }
+
+  function buildMessage(type){
+    var t = TEMPLATES[type] || TEMPLATES.unknown;
+    // School is OPTIONAL: good to have, never required. When it's set it
+    // is included; when it's blank the segment is simply left out — no
+    // placeholder is ever texted, and a missing school never blocks a send.
+    // The threat and reaching family are what matter.
+    var school = val(els.school, '');
+    var name = val(els.name, '');
+    var room = val(els.room, '');
+    var time = nowStr();
+    var parts;
+    if(type==='safe'){
+      parts = ["I'M SAFE"];
+      if(school) parts.push(school);
+      parts.push(time);
+    } else if(type==='help'){
+      parts = ['NEED HELP'];
+      if(school) parts.push(school);
+      parts.push(time);
+    } else if(type==='allclear'){
+      parts = ['ALL CLEAR - Lockdown lifted, I\'m okay'];
+      if(school) parts.push(school);
+      parts.push(time);
+    } else {
+      parts = ['LOCKDOWN'];
+      if(school) parts.push(school);
+      parts.push(t.label, time);
+    }
+    if(name) parts.push(name);
+    if(room && type!=='allclear') parts.push(room);
+    // For lockdown types include guidance suffix if room missing? Keep short.
+    return parts.join(' - ');
+  }
+
+  function isIOS(){
+    var ua = navigator.userAgent||'';
+    if(/iPhone|iPad|iPod/i.test(ua)) return true;
+    // iPadOS 13+ reports as Macintosh but has touch
+    if(/Macintosh/.test(ua) && navigator.maxTouchPoints && navigator.maxTouchPoints>1) return true;
+    return false;
+  }
+  function isStandalone(){
+    try{ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }catch(e){ return false; }
+  }
+  // INSTALLED vs BROWSER — the persistence rule, in one place:
+  // Opened from a Home Screen icon (standalone / fullscreen / minimal-ui
+  // display mode, iOS navigator.standalone, or an Android app referrer),
+  // this is the family's own trusted device: setup may be saved natively,
+  // on this device only, and restored on every open.
+  // In an ordinary browser tab nothing is written to or read from device
+  // storage at all — setup lives in memory for this visit only, and a
+  // refresh or closing the tab clears every trace of it by design.
+  function isInstalledApp(){
+    try{
+      if(window.navigator.standalone === true) return true;
+      if(document.referrer && document.referrer.indexOf('android-app://') === 0) return true;
+      if(window.matchMedia){
+        var modes = ['standalone', 'fullscreen', 'minimal-ui', 'window-controls-overlay'];
+        for(var i = 0; i < modes.length; i++){
+          if(window.matchMedia('(display-mode: ' + modes[i] + ')').matches) return true;
+        }
+      }
+    }catch(e){}
+    return false;
+  }
+  var STORE_KEY = 'familyFlashLineSetupV1';
+  function saveSetupNative(){
+    if(!isInstalledApp()) return false;
+    try{
+      var data = {
+        name: (els.name.value || '').trim(),
+        school: (els.school.value || '').trim(),
+        room: (els.room.value || '').trim(),
+        phones: (els.phones.value || '').trim(),
+        contacts: getContacts()
+      };
+      window.localStorage.setItem(STORE_KEY, JSON.stringify(data));
+      return true;
+    }catch(e){ return false; }
+  }
+  function loadNativeSetup(){
+    if(!isInstalledApp()) return false;
+    try{
+      var raw = window.localStorage.getItem(STORE_KEY);
+      if(!raw) return false;
+      var d = JSON.parse(raw);
+      if(!d || typeof d !== 'object') return false;
+      if(typeof d.name === 'string') els.name.value = d.name;
+      if(typeof d.school === 'string') els.school.value = d.school;
+      if(typeof d.room === 'string') els.room.value = d.room;
+      if(typeof d.phones === 'string') els.phones.value = d.phones;
+      if(d.contacts && d.contacts.length){
+        renderContacts(d.contacts);
+      } else if((els.phones.value || '').trim()){
+        renderContacts(phoneList().map(function(n, idx){ return { label: idx === 0 ? 'Family' : 'Family ' + (idx + 1), phone: n }; }));
+      }
+      return phoneList().length > 0;
+    }catch(e){ return false; }
+  }
+  function clearNativeSetup(){
+    // Clearing works in any mode: even in a browser tab it removes anything
+    // a previous installed session on this origin may have saved.
+    try{ window.localStorage.removeItem(STORE_KEY); }catch(e){}
+  }
+  function refreshSaveModeUI(){
+    var line = document.getElementById('saveModeLine');
+    if(line){
+      line.textContent = isInstalledApp()
+        ? 'Home Screen: Done saves setup on this device only. Never uploaded.'
+        : 'Browser: setup clears on refresh. To save it, Add to Home Screen first.';
+    }
+  }
+  function phoneList(){
+    return (els.phones.value||'').split(',').map(function(s){ return s.replace(/[^\d+]/g,'').trim(); }).filter(function(s){ return s.length>0; });
+  }
+  function phonesClean(){ return phoneList().join(','); }
+
+  // LABELED FAMILY CONTACTS — numbers live only in the setup rows. Everywhere
+  // else (recipient chips, sticky bar, ready line) shows a label like "Mom"
+  // or "All family" and a count — never a number — so a stranger who finds
+  // this phone learns nothing about the family.
+  function getContacts(){
+    var rows = document.querySelectorAll('#contactsList .contact-row');
+    var out = [];
+    for(var i = 0; i < rows.length; i++){
+      var labelEl = rows[i].querySelector('.contact-label');
+      var numEl = rows[i].querySelector('.contact-number');
+      var label = labelEl ? (labelEl.value || '').trim() : '';
+      var phone = numEl ? (numEl.value || '').trim() : '';
+      if(label || phone) out.push({ label: label || 'Family', phone: phone });
+    }
+    return out;
+  }
+  function contactKey(c){ return (c.label || 'Family') + '|' + c.digits; }
+  function contactsWithNumbers(){
+    return getContacts().map(function(c){
+      return { label: c.label, phone: c.phone, digits: (c.phone || '').replace(/[^\d+]/g, '') };
+    }).filter(function(c){ return c.digits.length > 0; });
+  }
+  function syncPhonesFromContacts(){
+    els.phones.value = contactsWithNumbers().map(function(c){ return c.digits; }).join(',');
+  }
+  function makeContactRow(label, phone){
+    var row = document.createElement('div');
+    row.className = 'contact-row';
+    var labelInput = document.createElement('input');
+    labelInput.type = 'text';
+    labelInput.className = 'contact-label';
+    labelInput.value = label || '';
+    labelInput.placeholder = 'Mom, Dad, Grandma…';
+    labelInput.setAttribute('aria-label', 'Contact name');
+    var numInput = document.createElement('input');
+    numInput.type = 'tel';
+    numInput.className = 'contact-number';
+    numInput.setAttribute('inputmode', 'tel');
+    numInput.value = phone || '';
+    numInput.placeholder = 'Phone number';
+    numInput.setAttribute('aria-label', (label || 'Family') + ' phone number');
+    var removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'contact-remove';
+    removeBtn.textContent = '×';
+    removeBtn.setAttribute('aria-label', 'Remove this contact');
+    removeBtn.addEventListener('click', function(){
+      var list = document.getElementById('contactsList');
+      if(list && list.querySelectorAll('.contact-row').length > 1){ row.remove(); }
+      else { labelInput.value = ''; numInput.value = ''; }
+      syncPhonesFromContacts();
+      buildRecipientChips();
+      updatePreview(null, false);
+    });
+    labelInput.addEventListener('input', function(){
+      numInput.setAttribute('aria-label', (labelInput.value.trim() || 'Family') + ' phone number');
+      buildRecipientChips();
+    });
+    numInput.addEventListener('input', function(){
+      syncPhonesFromContacts();
+      buildRecipientChips();
+      updatePreview(null, false);
+    });
+    row.appendChild(labelInput);
+    row.appendChild(numInput);
+    row.appendChild(removeBtn);
+    return row;
+  }
+  function renderContacts(list){
+    var wrap = document.getElementById('contactsList');
+    if(!wrap) return;
+    if(!list || !list.length) list = [{ label: 'Mom', phone: '' }, { label: 'Dad', phone: '' }];
+    wrap.innerHTML = '';
+    for(var i = 0; i < list.length; i++) wrap.appendChild(makeContactRow(list[i].label, list[i].phone));
+    syncPhonesFromContacts();
+    buildRecipientChips();
+  }
+  function addContact(label){
+    // One tap: if that person already has a row, jump straight to its number
+    // field; otherwise add the row and land in the number field, ready to type.
+    var rows = document.querySelectorAll('#contactsList .contact-row');
+    for(var i = 0; i < rows.length; i++){
+      var labelEl = rows[i].querySelector('.contact-label');
+      if(labelEl && (labelEl.value || '').trim().toLowerCase() === label.toLowerCase()){
+        var numEl = rows[i].querySelector('.contact-number');
+        if(numEl){ try{ numEl.focus(); }catch(e){} }
+        return;
+      }
+    }
+    var wrap = document.getElementById('contactsList');
+    if(!wrap) return;
+    var row = makeContactRow(label, '');
+    wrap.appendChild(row);
+    var num = row.querySelector('.contact-number');
+    if(num){ try{ num.focus(); }catch(e){} }
+    syncPhonesFromContacts();
+    buildRecipientChips();
+  }
+  function selectedNumbers(){
+    var list = contactsWithNumbers();
+    if(selectedRecipientKey !== 'all'){
+      for(var i = 0; i < list.length; i++){
+        if(contactKey(list[i]) === selectedRecipientKey) return [list[i].digits];
+      }
+    }
+    return list.map(function(c){ return c.digits; });
+  }
+  function selectedRecipientLabel(){
+    var list = contactsWithNumbers();
+    if(!list.length) return '';
+    if(selectedRecipientKey !== 'all'){
+      for(var i = 0; i < list.length; i++){
+        if(contactKey(list[i]) === selectedRecipientKey) return list[i].label;
+      }
+    }
+    return 'All family (' + list.length + ') — ' + list.map(function(c){ return c.label; }).join(', ');
+  }
+  function buildRecipientChips(){
+    var bar = document.getElementById('recipientBar');
+    var wrap = document.getElementById('recipientChips');
+    if(!bar || !wrap) return;
+    var list = contactsWithNumbers();
+    if(!list.length){
+      bar.hidden = true;
+      wrap.innerHTML = '';
+      selectedRecipientKey = 'all';
+      return;
+    }
+    if(selectedRecipientKey !== 'all'){
+      var ok = false;
+      for(var i = 0; i < list.length; i++){ if(contactKey(list[i]) === selectedRecipientKey) ok = true; }
+      if(!ok) selectedRecipientKey = 'all';
+    }
+    bar.hidden = false;
+    wrap.innerHTML = '';
+    var allChip = document.createElement('button');
+    allChip.type = 'button';
+    allChip.className = 'r-chip';
+    allChip.textContent = 'All family (' + list.length + ') — ' + list.map(function(c){ return c.label; }).join(', ');
+    allChip.setAttribute('aria-pressed', selectedRecipientKey === 'all' ? 'true' : 'false');
+    allChip.addEventListener('click', function(){
+      selectedRecipientKey = 'all';
+      buildRecipientChips();
+      syncSendHelpers();
+    });
+    wrap.appendChild(allChip);
+    list.forEach(function(c){
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'r-chip';
+      chip.textContent = c.label;
+      chip.setAttribute('aria-pressed', selectedRecipientKey === contactKey(c) ? 'true' : 'false');
+      chip.addEventListener('click', function(){
+        selectedRecipientKey = contactKey(c);
+        buildRecipientChips();
+        syncSendHelpers();
+      });
+      wrap.appendChild(chip);
+    });
+  }
+  var REASON_SHORT = { shooter: 'Shooter / Weapon', bomb: 'Bomb threat', fight: 'Fight on campus', unknown: 'Don’t know why', safe: 'I’m SAFE', help: 'Need HELP', allclear: 'All clear' };
+  // ALWAYS-WITH-YOU RULE for the sticky send bar: once a reason has been
+  // tapped and a family number exists, "Text family now" is pinned to the
+  // bottom of the screen and STAYS there — always within a tap, always
+  // scrolling with you. It never appears or disappears based on scroll
+  // distance, never hides because the preview's own send button happens
+  // to be on screen, and never hides because the guide / setup panel is
+  // open (setup's sticky Done bar simply sits above it — see the CSS).
+  // It only goes away when there is genuinely nothing to send: no reason
+  // picked yet, or no family number to send to.
+  function updateSticky(){
+    // Both halves picked: a reason has been tapped and a family recipient
+    // is chosen (All family is pre-picked as soon as any number is saved).
+    // Its summary shows the reason and the recipient label only — never
+    // a number.
+    var bar = document.getElementById('stickySend');
+    var btn = document.getElementById('stickyBtn');
+    var sub = document.getElementById('stickySub');
+    if(!bar || !btn) return;
+    var ready = hasPickedReason && !setupMissing() && contactsWithNumbers().length > 0;
+    if(!ready){
+      bar.hidden = true;
+      document.body.classList.remove('has-sticky');
+      return;
+    }
+    bar.hidden = false;
+    document.body.classList.add('has-sticky');
+    if(sub) sub.textContent = (REASON_SHORT[currentType] || 'Alert') + ' · To: ' + selectedRecipientLabel();
+    btn.setAttribute('href', smsLink(currentMsg));
+  }
+  function smsLink(msg){
+    var nums = selectedNumbers().join(',');
+    // iOS Messages REQUIRES the '&body=' separator; Android uses '?body=' (or '?&body=').
+    // Getting this wrong on iOS = Messages opens but the text is silently dropped.
+    // Multiple recipients: comma-separated list works on both; iOS group pre-fill is
+    // unreliable on some versions, so callers also copy the message as a paste fallback.
+    var sep = isIOS() ? '&' : '?';
+    return 'sms:' + nums + sep + 'body=' + encodeURIComponent(msg);
+  }
+  function refreshPlatformUI(){
+    var pill = document.getElementById('platformPill');
+    var ios = isIOS();
+    var count = phoneList().length;
+    if(pill){
+      pill.textContent = ios
+        ? '♥ Ready on your iPhone'
+        : '♥ Ready on your phone';
+    }
+    var gh = document.getElementById('iosGroupHint');
+    if(gh){ if(ios && count>1) gh.classList.add('show'); else if(ios && count<=1) gh.classList.remove('show'); else gh.classList.remove('show'); }
+    // Install card: tag the box that matches THIS phone, so a first-time
+    // family reads only their own three steps.
+    var iosBox = document.getElementById('installIos');
+    var andBox = document.getElementById('installAndroid');
+    var isAndroid = /Android/i.test(navigator.userAgent || '');
+    if(iosBox) iosBox.classList.toggle('is-yours', ios);
+    if(andBox) andBox.classList.toggle('is-yours', !ios && isAndroid);
+    var bh = document.getElementById('iosBlankHint');
+    if(bh){ if(ios) bh.classList.add('show'); else bh.classList.remove('show'); }
+  }
+
+  function showToast(text){
+    els.toast.textContent = text;
+    els.toast.classList.add('show');
+    setTimeout(function(){ els.toast.classList.remove('show'); }, 2600);
+  }
+
+  // NO DOOM-SCROLLING: every programmatic move on this page is an instant
+  // jump, never a long animated glide through everything in between. The
+  // stylesheet sets scroll-behavior:smooth on <html>, so each jump briefly
+  // switches it off, moves, and restores it.
+  function withInstantScroll(fn){
+    var root = document.documentElement;
+    var prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    try{ fn(); }catch(e){}
+    root.style.scrollBehavior = prev;
+  }
+  function instantScrollIntoView(el){
+    if(!el) return;
+    withInstantScroll(function(){ el.scrollIntoView({ block: 'start' }); });
+  }
+  // Bring a form field to the TOP of the visible screen — measured against
+  // the visual viewport, so when the on-screen keyboard pops up (worst in
+  // landscape, where it eats most of the height) the field being typed in
+  // sits right at the top of what's left, never hidden behind the keyboard
+  // with the user left scrolling around hunting for it.
+  function pinFieldToTop(el){
+    if(!el || typeof el.getBoundingClientRect !== 'function') return;
+    try{
+      var rect = el.getBoundingClientRect();
+      var vv = window.visualViewport;
+      var viewTop = vv ? vv.offsetTop : 0;
+      var y = window.pageYOffset + rect.top - viewTop - 10;
+      if(y < 0) y = 0;
+      withInstantScroll(function(){ window.scrollTo(0, y); });
+    }catch(e){
+      instantScrollIntoView(el);
+    }
+  }
+  // Focus a field without the browser's own jumpy auto-scroll, then pin it
+  // to the top of the screen — immediately, and again once the keyboard has
+  // finished sliding in, so it stays put above the keys.
+  function revealField(el){
+    if(!el) return;
+    try{ el.focus({ preventScroll: true }); }catch(e){ try{ el.focus(); }catch(e2){} }
+    pinFieldToTop(el);
+    setTimeout(function(){ if(document.activeElement === el) pinFieldToTop(el); }, 320);
+    setTimeout(function(){ if(document.activeElement === el) pinFieldToTop(el); }, 620);
+  }
+
+  function setStatus(text){
+    var s = document.getElementById('actionStatus');
+    if(s) s.textContent = text || '';
+  }
+  function syncSendHelpers(){
+    // Keep the direct Messages button and the manual copy box matched to the
+    // current message, so they always carry exactly what the preview shows.
+    // NO ORPHAN SENDING: while no family number is set, there is nobody
+    // to send to — the button carries NO sms: link at all (href '#',
+    // marked disabled) and the copy box stays empty. A missing school
+    // never disables anything: the message just goes out without it.
+    var link = document.getElementById('openBtn');
+    var sendable = !setupMissing();
+    if(sendable){
+      // The "add a family number first" hint must disappear the moment a
+      // number is actually set — otherwise it contradicts the filled-in
+      // preview and confuses a child who already did setup.
+      var st = document.getElementById('actionStatus');
+      if(st && st.textContent.indexOf('One quick thing first') === 0) st.textContent = '';
+    }
+    if(link){
+      if(sendable){
+        link.setAttribute('href', smsLink(currentMsg));
+        link.removeAttribute('aria-disabled');
+        link.style.opacity = '';
+        link.style.pointerEvents = '';
+      } else {
+        link.setAttribute('href', '#previewBox');
+        link.setAttribute('aria-disabled', 'true');
+        link.style.opacity = '.55';
+        // Still tappable on purpose: its click handler sends the child to
+        // setup (blockForSetup) instead of ever opening Messages.
+      }
+    }
+    var box = document.getElementById('manualCopyBox');
+    var boxVal = sendable ? currentMsg : '';
+    if(box && box.value !== boxVal) box.value = boxVal;
+    updateSticky();
+  }
+  function showSmsHelp(statusText){
+    // Backup copy steps live in the collapsed fallback under the preview.
+    var d = document.getElementById('pasteSteps');
+    if(d && d.tagName === 'DETAILS') d.open = true;
+    syncSendHelpers();
+    if(statusText) setStatus(statusText);
+  }
+  function hideSmsHelp(){ /* steps stay visible by design — nothing to hide */ }
+  function copySilently(text){
+    // Best-effort clipboard copy with no UI: used right before trying to open
+    // Messages, so the paste fallback is ready even if the app never opens.
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).catch(function(){ execCopy(text); });
+        return;
+      }
+    }catch(e){}
+    execCopy(text);
+  }
+
+  // DIRECT SEND: tapping a reason hands the sms: link to the phone right
+  // away, from inside the tap itself, so Messages opens with the text
+  // already filled in. This works in Chrome (Android) and Safari (iPhone).
+  // In some in-app viewers the same jump can land on a blank page, which
+  // is why the page leads with the "Open in Chrome / Safari" step at the
+  // top — that is the direct route, not copy-and-paste.
+  function setupMissing(){
+    // School is optional and never blocks a send. The one thing a message
+    // truly needs is someone to send it to — a family number.
+    return contactsWithNumbers().length === 0;
+  }
+  function blockForSetup(){
+    setStatus('Add a family number in setup below first.');
+    showToast('Add a family number first — setup below.');
+    showSetupForm();
+    // Land INSTANTLY on the one field that matters, pinned to the top of
+    // the screen — never a long animated scroll through the whole guide
+    // first. For a child fumbling mid-threat, the page must feel still and
+    // obvious, not like it's scrolling away from them.
+    var firstNum = document.querySelector('#contactsList .contact-number');
+    if(firstNum) revealField(firstNum);
+    else instantScrollIntoView(document.getElementById('setup'));
+  }
+
+  // ONE-TIME SETUP STATE: not set up -> only the slim teaser shows, tucked
+  // below the alert buttons. Set up -> the whole form collapses into a
+  // single ready line with an Edit button. Values stay in the (hidden)
+  // fields, so messages keep using them and Edit reopens them filled in.
+  var setupDone = false;
+  var setupSavedNative = false;
+  var setupTeaser = document.getElementById('setupTeaser');
+  var setupFormWrap = document.getElementById('setupFormWrap');
+  var setupDoneBar = document.getElementById('setupDoneBar');
+  var setupDoneText = document.getElementById('setupDoneText');
+  var setupDoneSub = document.getElementById('setupDoneSub');
+  var setupFormStatus = document.getElementById('setupFormStatus');
+  // KEYBOARD RULE: any field inside the setup form, once tapped, is pinned
+  // to the top of the visible screen — on focus, and again whenever the
+  // on-screen keyboard changes the visible height (visualViewport resize).
+  // In landscape especially, the field you tapped (e.g. Dad's number) is
+  // always right there at the top, never buried under the keyboard.
+  var keyboardField = null;
+  document.addEventListener('focusin', function(e){
+    var el = e.target;
+    if(!el || (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA')) return;
+    if(el.type === 'hidden' || el.readOnly) return;
+    var guidePanelEl = document.getElementById('guidePanel');
+    if(!guidePanelEl || !guidePanelEl.contains(el)) return;
+    keyboardField = el;
+    setTimeout(function(){ if(document.activeElement === el) pinFieldToTop(el); }, 300);
+    setTimeout(function(){ if(document.activeElement === el) pinFieldToTop(el); }, 600);
+  });
+  document.addEventListener('focusout', function(e){
+    if(keyboardField && e.target === keyboardField) keyboardField = null;
+  });
+  if(window.visualViewport){
+    var vvPinTimer = null;
+    window.visualViewport.addEventListener('resize', function(){
+      if(!keyboardField) return;
+      if(vvPinTimer) clearTimeout(vvPinTimer);
+      vvPinTimer = setTimeout(function(){
+        if(keyboardField && document.activeElement === keyboardField) pinFieldToTop(keyboardField);
+      }, 80);
+    });
+  }
+  function renderDoneBar(){
+    var count = phoneList().length;
+    var nick = (els.name.value || '').trim();
+    var school = (els.school.value || '').trim();
+    if(setupDoneText){
+      var schoolPart = school ? ' · ' + school : '';
+      setupDoneText.textContent = nick
+        ? 'Ready — sending as “' + nick + '”' + schoolPart + ' · ' + count + (count === 1 ? ' family number' : ' family numbers')
+        : 'Ready' + (school ? ' — ' + school : '') + ' · ' + count + (count === 1 ? ' family number' : ' family numbers') + ' · family knows you from your number';
+    }
+    if(setupDoneSub){
+      setupDoneSub.textContent = setupSavedNative
+        ? 'Saved on this device. Tucked away.'
+        : 'This visit only — browser clears it on refresh. Tucked away.';
+    }
+  }
+  function setGuideOpen(open){
+    var panel = document.getElementById('guidePanel');
+    var toggle = document.getElementById('guideToggle');
+    if(panel) panel.hidden = !open;
+    if(toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    // The send bar stays pinned whether the guide is open or closed —
+    // it is always within a tap. Setup's sticky Done bar sits above it.
+    updateSticky();
+  }
+  function showSetupForm(){
+    setGuideOpen(true);
+    if(setupTeaser) setupTeaser.hidden = true;
+    if(setupDoneBar) setupDoneBar.hidden = true;
+    if(setupFormWrap) setupFormWrap.hidden = false;
+    refreshSaveModeUI();
+  }
+  function hideSetupForm(){
+    setGuideOpen(false);
+    if(setupFormWrap) setupFormWrap.hidden = true;
+    if(setupDone){
+      if(setupTeaser) setupTeaser.hidden = true;
+      if(setupDoneBar) setupDoneBar.hidden = false;
+    } else {
+      if(setupDoneBar) setupDoneBar.hidden = true;
+      if(setupTeaser) setupTeaser.hidden = false;
+    }
+  }
+  function setupMissingField(){
+    // Nickname and school are both optional by design: a stressed child
+    // must never be blocked for skipping either — family can know it's
+    // them from their number alone. Only a family number is required,
+    // because without one there is nobody to send to.
+    if(phoneList().length === 0) return { el: els.phones, msg: 'Add at least one family number.' };
+    return null;
+  }
+  function completeSetup(){
+    var missing = setupMissingField();
+    if(missing){
+      if(setupFormStatus) setupFormStatus.textContent = missing.msg;
+      showToast(missing.msg);
+      // The missing "family number" is the hidden combined field — what the
+      // user actually needs is the first contact number box. Either way,
+      // jump straight to it, pinned to the top of the screen.
+      var target = missing.el;
+      if(target === els.phones) target = document.querySelector('#contactsList .contact-number') || target;
+      if(target && target !== els.phones) revealField(target);
+      else instantScrollIntoView(document.getElementById('setup'));
+      return;
+    }
+    if(setupFormStatus) setupFormStatus.textContent = '';
+    setStatus('');
+    setupDone = true;
+    // THE SAVE: installed (Home Screen) sessions write the setup to device
+    // storage here — nickname, school, room, family numbers, nothing else.
+    // Browser sessions skip storage entirely, so a refresh clears them.
+    setupSavedNative = saveSetupNative();
+    renderDoneBar();
+    hideSetupForm();
+    updatePreview(null, false);
+    showToast(setupSavedNative
+      ? 'Saved on this device. You’re ready.'
+      : 'Ready for this visit. Browser clears it on refresh.');
+    var alerts = document.getElementById('alerts');
+    if(alerts) instantScrollIntoView(alerts);
+  }
+  function clearSetup(){
+    clearNativeSetup();
+    els.name.value = ''; els.school.value = ''; els.room.value = ''; els.phones.value = '';
+    selectedRecipientKey = 'all';
+    renderContacts(null);
+    setupDone = false; setupSavedNative = false;
+    if(setupFormStatus) setupFormStatus.textContent = '';
+    cancelConfirm(true);
+    hideSetupForm();
+    updatePreview(null, false);
+    refreshSaveModeUI();
+    showToast('Saved setup cleared from this device.');
+    setStatus('Setup cleared. Nothing is saved now.');
+  }
+  function openDirect(msg){
+    if(setupMissing()){ blockForSetup(); return; }
+    copySilently(msg);
+    setStatus('Opening Messages — press Send there.');
+    var a = document.createElement('a');
+    a.href = smsLink(msg);
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ try{ document.body.removeChild(a); }catch(e){} }, 400);
+  }
+  function readyMessage(msg){
+    syncSendHelpers();
+    openDirect(msg);
+  }
+  // URGENCY LADDER: every reason carries a temperature, and the preview box
+  // plus the pinned send bar recolour to match it — critical / urgent /
+  // serious stay hot and pulsing, safe / clear go soft and still.
+  var URGENCY = { shooter: 'critical', bomb: 'critical', help: 'urgent', fight: 'serious', unknown: 'caution', safe: 'safe', allclear: 'clear' };
+  function markSelected(){
+    // Exactly one button shows as chosen: the one matching the current message.
+    var all = document.querySelectorAll('[data-type]');
+    for(var i=0;i<all.length;i++){
+      if(all[i].getAttribute('data-type')===currentType) all[i].classList.add('is-selected');
+      else all[i].classList.remove('is-selected');
+    }
+    var urg = URGENCY[currentType] || 'caution';
+    var pb = document.getElementById('previewBox');
+    if(pb) pb.setAttribute('data-urgency', urg);
+    var ss = document.getElementById('stickySend');
+    if(ss) ss.setAttribute('data-urgency', urg);
+  }
+  function updateSenderLine(){
+    var line = document.getElementById('senderLine');
+    if(!line) return;
+    var nick = (els.name.value || '').trim();
+    line.textContent = nick
+      ? 'Sending as “' + nick + '”'
+      : 'No nickname — family knows your number.';
+  }
+  // PREVIEW HONESTY: while no family number is set, there is nobody to
+  // send to, so a clear block banner sits at the top of the preview box
+  // and the preview area says plainly that the message appears once a
+  // number is added. Every send path is already disabled in that state
+  // (see syncSendHelpers). A missing school never blocks: the message
+  // simply goes out without a school segment.
+  function displayPreview(){
+    var block = document.getElementById('previewBlock');
+    if(setupMissing()){
+      if(block) block.hidden = false;
+      els.preview.textContent = 'Add a number to see your message.';
+    } else {
+      if(block) block.hidden = true;
+      els.preview.textContent = currentMsg;
+    }
+  }
+  function updatePreview(type, openSms){
+    if(type) currentType = type;
+    currentMsg = buildMessage(currentType);
+    displayPreview();
+    updateSenderLine();
+    markSelected();
+    refreshPlatformUI();
+    syncSendHelpers();
+    if(openSms){
+      // Direct: hand the sms: link to the phone so Messages opens pre-filled.
+      readyMessage(currentMsg);
+    }
+  }
+
+  // Double-confirm for the good-news buttons: I'm SAFE and All clear are never urgent,
+  // so the first tap only previews + arms the button; a second tap on the SAME button
+  // sends. Any other button, or 30 seconds passing, cancels the armed state — so an
+  // all-clear can never go out from one stray tap while a lockdown reason is selected.
+  var CONFIRM_TYPES = { safe: 'I’m SAFE', allclear: 'All clear' };
+  var CONFIRM_MS = 30000;
+  var pendingType = null, pendingBtn = null, pendingTimer = null, pendingPrevType = null;
+  var confirmNote = document.getElementById('confirmNote');
+
+  function restoreConfirmBtn(btn){
+    if(!btn) return;
+    btn.classList.remove('confirming');
+    btn.removeAttribute('aria-pressed');
+    var titleEl = btn.querySelector('.title');
+    if(titleEl && btn.getAttribute('data-orig-title')) titleEl.textContent = btn.getAttribute('data-orig-title');
+    var subEl = btn.querySelector('.sub');
+    if(subEl && btn.getAttribute('data-orig-sub')) subEl.textContent = btn.getAttribute('data-orig-sub');
+    var kickEl = btn.querySelector('.kicker');
+    if(kickEl && btn.getAttribute('data-orig-kicker')) kickEl.textContent = btn.getAttribute('data-orig-kicker');
+  }
+  function cancelConfirm(silent, revertPreview){
+    if(pendingTimer){ clearTimeout(pendingTimer); pendingTimer = null; }
+    var armedType = pendingType, prevType = pendingPrevType;
+    restoreConfirmBtn(pendingBtn);
+    pendingType = null; pendingBtn = null; pendingPrevType = null;
+    if(confirmNote){ confirmNote.classList.remove('show'); confirmNote.textContent = ''; }
+    // A cancelled arm must not leave its message in the preview: revert to the
+    // message that was current before arming, so preview and buttons agree again.
+    if(revertPreview && armedType && currentType === armedType && prevType && prevType !== armedType){
+      currentType = prevType;
+      currentMsg = buildMessage(currentType);
+      displayPreview();
+      updateSenderLine();
+      markSelected();
+      syncSendHelpers();
+    }
+    if(!silent) showToast('Okay — cancelled. Nothing was sent.');
+  }
+  function armConfirm(type, btn){
+    // Remember the button's original wording once, so we can restore it exactly.
+    var titleEl = btn.querySelector('.title');
+    if(titleEl && !btn.getAttribute('data-orig-title')) btn.setAttribute('data-orig-title', titleEl.textContent);
+    var subEl = btn.querySelector('.sub');
+    if(subEl && !btn.getAttribute('data-orig-sub')) btn.setAttribute('data-orig-sub', subEl.textContent);
+    var kickEl = btn.querySelector('.kicker');
+    if(kickEl && !btn.getAttribute('data-orig-kicker')) btn.setAttribute('data-orig-kicker', kickEl.textContent);
+    pendingPrevType = currentType; pendingType = type; pendingBtn = btn;
+    btn.classList.add('confirming');
+    btn.setAttribute('aria-pressed', 'true');
+    if(kickEl) kickEl.textContent = 'Confirm — one more tap';
+    if(titleEl) titleEl.textContent = (type==='allclear' ? 'All clear' : 'I’m SAFE') + ' — tap again to send';
+    if(subEl) subEl.textContent = 'Tap 2 of 2 to send.';
+    if(confirmNote){
+      confirmNote.innerHTML = '<strong>Nothing sent yet.</strong> Tap the <strong>same button</strong> again to send.';
+      confirmNote.classList.add('show');
+    }
+    // Preview sync is the final step of arming: it is rebuilt from the armed type
+    // itself, replacing whatever lockdown message was there before.
+    currentType = type;
+    currentMsg = buildMessage(type);
+    displayPreview();
+    updateSenderLine();
+    markSelected();
+    refreshPlatformUI();
+    syncSendHelpers();
+    // No floating toast here on purpose: the confirm note sits in the page
+    // right under the buttons and the armed button itself re-labels to
+    // "tap again to send" — a pop-up at the bottom of the screen only
+    // floated over the "How to set up / use" button and hid it.
+    pendingTimer = setTimeout(function(){ cancelConfirm(true, true); showToast('Confirmation timed out — nothing was sent. Tap again when you’re ready.'); }, CONFIRM_MS);
+  }
+
+  // Alert buttons: urgent types send on one tap; safe / all-clear need the double-confirm above.
+  var btns = document.querySelectorAll('[data-type]');
+  for(var i=0;i<btns.length;i++){
+    btns[i].addEventListener('click', function(){
+      var type = this.getAttribute('data-type');
+      hasPickedReason = true;
+      if(CONFIRM_TYPES[type]){
+        if(pendingType === type && pendingBtn === this){
+          cancelConfirm(true);
+          updatePreview(type, true);
+          showToast('Confirmed — opening Messages with your text filled in.');
+        } else {
+          if(pendingType) cancelConfirm(true);
+          armConfirm(type, this);
+        }
+        return;
+      }
+      if(pendingType) cancelConfirm(true);
+      updatePreview(type, true);
+      showToast('Opening Messages — check the text, then press Send.');
+    });
+  }
+  // Text size controls (in-memory only, works in Safari + Home Screen web app)
+  var tsBtns = document.querySelectorAll('[data-text-size]');
+  for(var t=0;t<tsBtns.length;t++){
+    tsBtns[t].addEventListener('click', function(){
+      var sz = this.getAttribute('data-text-size');
+      if(sz==='normal') document.documentElement.removeAttribute('data-text');
+      else document.documentElement.setAttribute('data-text', sz);
+      for(var j=0;j<tsBtns.length;j++) tsBtns[j].setAttribute('aria-pressed', tsBtns[j]===this ? 'true':'false');
+    });
+  }
+  // Live update preview when typing setup
+  [els.name, els.school, els.room, els.phones].forEach(function(el){
+    el.addEventListener('input', function(){ updatePreview(null, false); });
+  });
+
+  function execCopy(text){
+    // Legacy copy path for web views where the Clipboard API is blocked.
+    // The textarea must be on-screen and editable-focused for this to work on
+    // iOS/Android web views — a fully transparent or off-screen one is ignored.
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.top = '12px'; ta.style.left = '12px';
+      ta.style.width = 'calc(100% - 24px)'; ta.style.height = '44px';
+      ta.style.opacity = '0.01'; ta.style.fontSize = '16px'; ta.style.zIndex = '60';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = false;
+      try{ ok = document.execCommand('copy'); }catch(e){ ok = false; }
+      document.body.removeChild(ta);
+      return !!ok;
+    }catch(e){ return false; }
+  }
+  function selectManualBox(){
+    var box = document.getElementById('manualCopyBox');
+    if(!box) return;
+    box.focus();
+    box.select();
+    try{ box.setSelectionRange(0, box.value.length); }catch(e){}
+  }
+  function copyText(text, okMsg){
+    function done(){
+      showToast(okMsg);
+      setStatus(okMsg + ' Open Messages, long-press, Paste, then Send — or tap a reason / the white button to open Messages directly.');
+    }
+    function manual(){
+      // Both copy APIs were blocked (common inside in-app web views). The
+      // reliable path left is the user's own long-press: the steps panel is
+      // always visible, with the message in a selectable box — select it now.
+      showSmsHelp('Copy needs one manual step on this phone — the message in the steps box below is highlighted for you.');
+      selectManualBox();
+      showToast('Long-press the highlighted message in the box, tap Copy, then paste it into Messages.');
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){
+        if(execCopy(text)) done(); else manual();
+      });
+    } else if(execCopy(text)){ done(); } else { manual(); }
+  }
+
+  var copyBtn = document.getElementById('copyBtn');
+  if(copyBtn){
+    copyBtn.addEventListener('click', function(){
+      if(setupMissing()){ blockForSetup(); return; }
+      updatePreview(null,false); copyText(currentMsg, 'Message copied — ready to paste.');
+    });
+  }
+  var helpCopyBtn = document.getElementById('helpCopyBtn');
+  if(helpCopyBtn){
+    helpCopyBtn.addEventListener('click', function(){
+      if(setupMissing()){ blockForSetup(); return; }
+      copyText(currentMsg, 'Message copied — ready to paste.');
+    });
+  }
+  var manualCopyBox = document.getElementById('manualCopyBox');
+  if(manualCopyBox){
+    // Tapping the box selects the whole message, ready for the system's Copy.
+    manualCopyBox.addEventListener('click', function(){ selectManualBox(); });
+    manualCopyBox.addEventListener('focus', function(){ selectManualBox(); });
+  }
+  var stickyBtn = document.getElementById('stickyBtn');
+  if(stickyBtn){
+    // The sticky twin of the white preview button: same sms: hand-off, same
+    // guards. It only exists on screen once a reason and a recipient are
+    // both picked, and it never carries a link while setup is incomplete.
+    stickyBtn.addEventListener('click', function(ev){
+      if(setupMissing()){ ev.preventDefault(); blockForSetup(); return; }
+      if(!contactsWithNumbers().length){
+        ev.preventDefault();
+        showToast('Add a family number in setup first — then one tap sends it.');
+        showSetupForm();
+        var firstNum = document.querySelector('#contactsList .contact-number');
+        if(firstNum) revealField(firstNum);
+        else instantScrollIntoView(document.getElementById('setup'));
+        return;
+      }
+      copySilently(currentMsg);
+      setStatus('Opening Messages with your text filled in — check it, then press Send there.');
+    });
+  }
+  var openBtn = document.getElementById('openBtn');
+  if(openBtn){
+    // The white button IS a real sms: link, kept in sync with the preview —
+    // a genuine tap on it is the direct hand-off to Messages in Chrome/Safari.
+    openBtn.addEventListener('click', function(ev){
+      if(setupMissing()){ ev.preventDefault(); blockForSetup(); return; }
+      copySilently(currentMsg);
+      setStatus('Opening Messages with your text filled in \u2014 check it, then press Send there.');
+    });
+  }
+  // Share the MESSAGE TEXT only (never this page's address) — fallback if SMS pre-fill fails on iOS
+  var shareMsgBtn = document.getElementById('shareMsgBtn');
+  if(shareMsgBtn){
+    shareMsgBtn.addEventListener('click', function(){
+      if(setupMissing()){ blockForSetup(); return; }
+      updatePreview(null,false);
+      var msg = currentMsg;
+      function shareFallback(){
+        // Share sheet unavailable or blocked in this view: fall back to copy
+        // plus the on-screen paste steps, so the tap is never a dead end.
+        copyText(msg, 'Share didn’t open here, so your message was copied instead.');
+        showSmsHelp('Share didn’t open in this view — no problem. Your message is copied: follow the paste steps below the preview.');
+      }
+      if(navigator.share){
+        // Text-only share: lets the user pick Messages / a family chat if the
+        // sms: pre-fill route did not work.
+        try{
+          var p = navigator.share({ title: 'Family FlashLine — Family Lockdown Alert', text: msg });
+          if(p && typeof p.catch === 'function'){
+            p.then(function(){
+              setStatus('Share opened — pick Messages or your family chat, check the text, then Send there.');
+            }).catch(function(err){
+              if(err && err.name === 'AbortError'){
+                setStatus('Share closed — nothing was sent. Your message is still in the preview above whenever you’re ready.');
+              } else {
+                shareFallback();
+              }
+            });
+          }
+        }catch(e){ shareFallback(); }
+      } else {
+        shareFallback();
+      }
+    });
+  }
+  function sheetText(){
+    var school = val(els.school,'________ School');
+    var name = val(els.name,'________');
+    return [
+      'FAMILY FLASHLINE — LOCKDOWN CODE SHEET',
+      'Family nickname (never a full real name): '+name+'  •  School: '+school,
+      '',
+      'In a lockdown: follow your teacher first, stay quiet, text only if safe. Call 911 in immediate danger.',
+      '',
+      'CODE WORDS — what we agreed at home:',
+      'SHOOTS = Shooter / weapon threat',
+      'EXPLOSIVE = Bomb threat',
+      'SCRAP = Fight / disturbance on campus',
+      'LOCKED ? = In lockdown, unknown reason',
+      'SAFE = I\'m safe right now',
+      'HELP = I need help now',
+      'CLEAR = Lockdown lifted, I\'m okay',
+      '',
+      'FULL MESSAGE FORMAT:',
+      'LOCKDOWN - School - Reason - Time - Family nickname - Room/building if safe to share',
+      'Nickname safety: use a nickname only your family knows — never a full real name, so a stranger who finds the phone cannot identify your child.',
+      'Example: LOCKDOWN - '+school+' - Fight / disturbance - '+nowStr()+(name!=='________'?' - '+name:''),
+      '',
+      'RULES WE AGREED:',
+      '• Only share what staff announced or what you saw/heard yourself — not rumors.',
+      '• If you don\'t know the reason, say Unknown reason.',
+      '• Don\'t post your location publicly. Family only.',
+      '• Parents: don\'t go to campus unless officials say to. Reply once and wait.',
+      '',
+      'Family numbers on every alert: '+(val(els.phones,'________________'))
+    ].join('\n');
+  }
+
+  document.getElementById('copySheetBtn').addEventListener('click', function(){ copyText(sheetText(), 'Family sheet copied — paste it into your family chat.'); });
+  document.getElementById('downloadSheetBtn').addEventListener('click', function(){
+    var blob = new Blob([sheetText()], {type:'text/plain'});
+    var url = URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download='family-lockdown-code-sheet.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 800);
+    showToast('Sheet downloaded.');
+  });
+  var copyPostBtn = document.getElementById('copyPostBtn');
+  if(copyPostBtn){
+    copyPostBtn.addEventListener('click', function(){
+      var postEl = document.getElementById('sharePostText');
+      if(postEl) copyText(postEl.textContent.trim(), 'Comment copied — paste it on Facebook or in your group chat.');
+    });
+  }
+
+  var guideToggle = document.getElementById('guideToggle');
+  if(guideToggle){
+    guideToggle.addEventListener('click', function(){
+      var panel = document.getElementById('guidePanel');
+      setGuideOpen(!!(panel && panel.hidden));
+    });
+  }
+  var setupOpenBtn = document.getElementById('setupOpenBtn');
+  if(setupOpenBtn){
+    setupOpenBtn.addEventListener('click', function(){
+      showSetupForm();
+      setTimeout(function(){ try{ els.name.focus({preventScroll:true}); }catch(e){ try{ els.name.focus(); }catch(e2){} } }, 60);
+    });
+  }
+  var setupEditBtn = document.getElementById('setupEditBtn');
+  if(setupEditBtn) setupEditBtn.addEventListener('click', function(){ showSetupForm(); });
+  var setupDoneBtn = document.getElementById('setupDoneBtn');
+  if(setupDoneBtn) setupDoneBtn.addEventListener('click', completeSetup);
+  var setupHideBtn = document.getElementById('setupHideBtn');
+  if(setupHideBtn) setupHideBtn.addEventListener('click', function(){ hideSetupForm(); });
+  var setupClearBtn = document.getElementById('setupClearBtn');
+  if(setupClearBtn) setupClearBtn.addEventListener('click', clearSetup);
+  var qaChips = document.querySelectorAll('[data-add-contact]');
+  for(var q = 0; q < qaChips.length; q++){
+    qaChips[q].addEventListener('click', function(){ addContact(this.getAttribute('data-add-contact')); });
+  }
+
+  // If the app gets installed mid-visit, a setup already completed this
+  // session becomes a saved one right away — no need to redo it.
+  window.addEventListener('appinstalled', function(){
+    refreshSaveModeUI();
+    if(setupDone && !setupSavedNative){ setupSavedNative = saveSetupNative(); renderDoneBar(); }
+  });
+  try{
+    var dmQuery = window.matchMedia('(display-mode: standalone)');
+    var onDmChange = function(){
+      refreshSaveModeUI();
+      if(setupDone && !setupSavedNative && isInstalledApp()){ setupSavedNative = saveSetupNative(); renderDoneBar(); }
+    };
+    if(dmQuery && dmQuery.addEventListener) dmQuery.addEventListener('change', onDmChange);
+    else if(dmQuery && dmQuery.addListener) dmQuery.addListener(onDmChange);
+  }catch(e){}
+
+  // No scroll watching on purpose: the sticky send bar's visibility must
+  // never depend on scroll distance or on whether the preview's own send
+  // button is on screen. Once a send is ready it is pinned, full stop —
+  // updateSticky() is called from every state change (reason tap,
+  // recipient pick, contact edit, setup open/close) instead.
+
+  // RESTORE ON OPEN: installed sessions load the saved setup back into the
+  // (hidden) fields before the first preview is built, so the saved family
+  // nickname is auto-included in every message from the very first tap,
+  // setup starts already tucked away behind the green ready line, and the
+  // emergency screen shows only the alert buttons. Browser sessions skip
+  // storage completely and start fresh, every time.
+  // Start with the two most common rows ready to fill (Mom, Dad) — adding
+  // Grandma, Grandpa or anyone else is the one-tap chips above the rows.
+  // A restored installed setup re-renders the rows from what was saved.
+  renderContacts(null);
+  if(loadNativeSetup()){
+    setupDone = true;
+    setupSavedNative = true;
+    renderDoneBar();
+    hideSetupForm();
+  }
+  refreshSaveModeUI();
+
+  updatePreview('unknown', false);
+})();
+</script>
+</body>
+</html>
