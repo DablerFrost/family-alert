@@ -331,7 +331,17 @@ body.has-sticky .toast{bottom:132px}
    (the highest-attention colour). Warm vs cool + dark vs pale + a yellow
    halo = it registers before a single word is read, even in peripheral
    vision, even stressed. */
-.guide-wrap{position:relative;margin:30px 0 4px}
+.guide-wrap{position:relative;margin:22px 0 4px}
+/* DONE STATE: setup is finished, so the guide drops below the alerts and
+   shrinks into a quiet little hamburger entry — no badge, no pulse, no
+   yellow halo shouting "start here" — just there if you ever need to edit. */
+.guide-wrap.is-done{margin:18px 0 4px}
+.guide-wrap.is-done .guide-cta{min-height:58px;padding:13px 15px;border-width:2px;box-shadow:0 0 0 3px var(--yellow),0 6px 16px rgba(10,110,110,.28);animation:none}
+.guide-wrap.is-done .guide-cta-badge{display:none}
+.guide-wrap.is-done .guide-cta-icon{width:42px;height:42px;flex-basis:42px;font-size:1.375rem;border-width:2px}
+.guide-wrap.is-done .guide-cta-text strong{font-size:1.0625rem}
+.guide-wrap.is-done .guide-cta-text span{font-size:0.8125rem;margin-top:2px}
+.guide-wrap.is-done .guide-cta-chev{width:32px;height:32px;font-size:1.0625rem}
 .guide-cta{display:flex;gap:14px;align-items:center;width:100%;text-align:left;appearance:none;background:var(--teal);border:3px solid var(--teal-deep);border-radius:22px;padding:22px 18px 20px;cursor:pointer;color:#fff;min-height:96px;position:relative;box-shadow:0 0 0 5px var(--yellow),0 14px 32px rgba(10,110,110,.45);animation:guidePulse 2.8s ease-out infinite}
 @keyframes guidePulse{0%{box-shadow:0 0 0 5px var(--yellow),0 0 0 5px rgba(255,207,63,.9),0 14px 32px rgba(10,110,110,.45)}70%{box-shadow:0 0 0 5px var(--yellow),0 0 0 18px rgba(255,207,63,0),0 14px 32px rgba(10,110,110,.45)}100%{box-shadow:0 0 0 5px var(--yellow),0 0 0 5px rgba(255,207,63,0),0 14px 32px rgba(10,110,110,.45)}}
 @media (prefers-reduced-motion: reduce){.guide-cta{animation:none}}
@@ -383,103 +393,18 @@ body.has-sticky .toast{bottom:132px}
 </header>
 
 <div class="wrap">
-  <div class="emergency" role="note">
-    <div><strong>In immediate danger?</strong> <span style="color:var(--muted)">Call 911 first.</span></div>
-    <a href="tel:911">Call 911</a>
-  </div>
-
-  <div class="open-strip" role="note">Open in your phone's browser — buttons work there.</div>
-
-  <!-- ALERTS -->
-  <section class="card" id="alerts" aria-labelledby="alerts-h" style="padding-bottom:18px">
-    <h2 id="alerts-h">Tap one — it texts your family</h2>
-    <p class="hint">Tap once — press <strong>Send</strong> in Messages. <strong>“Don’t know” is okay.</strong></p>
-
-    <div class="alerts" role="group" aria-label="Lockdown alert types">
-      <button class="alert-btn red" data-type="shooter">
-        <span class="icon" aria-hidden="true">●</span>
-        <span><span class="kicker">Lockdown</span><span class="title">Shooter / Weapon</span><span class="sub">Gun or weapon</span></span>
-      </button>
-
-      <button class="alert-btn dark" data-type="bomb">
-        <span class="icon" aria-hidden="true">●</span>
-        <span><span class="kicker">Lockdown</span><span class="title">Bomb threat</span><span class="sub">Bomb or explosive</span></span>
-      </button>
-
-      <button class="alert-btn orange" data-type="fight">
-        <span class="icon" aria-hidden="true">●</span>
-        <span><span class="kicker">Lockdown</span><span class="title">Fight on campus</span><span class="sub">Fight or disturbance</span></span>
-      </button>
-
-      <button class="alert-btn amber" data-type="unknown">
-        <span class="icon" aria-hidden="true">●</span>
-        <span><span class="kicker">Lockdown</span><span class="title">Don’t know why</span><span class="sub">No reason given yet</span></span>
-      </button>
-
-      <button class="alert-btn green" data-type="safe">
-        <span class="icon" aria-hidden="true">●</span>
-        <span><span class="kicker">Check-in — tap twice</span><span class="title">I’m SAFE</span><span class="sub">Tap twice to send</span></span>
-      </button>
-
-      <button class="alert-btn outline" data-type="help">
-        <span class="icon" aria-hidden="true">!</span>
-        <span><span class="kicker">Urgent</span><span class="title">Need HELP</span><span class="sub">I need help now</span></span>
-      </button>
-    </div>
-
-    <div class="confirm-note" id="confirmNote" role="status" aria-live="polite"></div>
-
-    <div class="recipient-bar" id="recipientBar" hidden>
-      <span class="recipient-label" id="recipientLabel">Send to — pick one</span>
-      <div class="recipient-chips" id="recipientChips" role="group" aria-labelledby="recipientLabel"></div>
-    </div>
-
-    <div class="preview" id="previewBox" aria-live="polite">
-      <label for="previewText">Your message</label>
-      <div class="preview-block" id="previewBlock" role="alert"><strong>Add a family number first.</strong><span>Add one in setup below — step 3. School is optional.</span></div>
-      <div class="preview-text" id="previewText">Add a number to see your message.</div>
-      <p id="senderLine" style="font-size:.82rem;color:#e8d5d9;margin:8px 0 0">No nickname — family knows your number.</p>
-      <div class="final-step"><span aria-hidden="true" style="font-size:1.25rem;line-height:1">♥</span><span><strong>Last step</strong> — tap to text family.</span></div>
-      <div class="actions">
-        <a class="btn btn-direct" id="openBtn" href="sms:">♥ Text family now</a>
-      </div>
-      <p style="font-size:.9rem;color:#ffe3e7;margin:2px 0 0">Opens Messages — press <strong>Send</strong> there.</p>
-      <p class="action-status" id="actionStatus" role="status" aria-live="polite"></p>
-      <details class="fallback-details" id="pasteSteps">
-        <summary>Messages didn’t open? Copy &amp; paste backup</summary>
-        <div class="paste-steps">
-          <ol>
-            <li>Tap <strong>Copy message</strong> below.</li>
-            <li>Open <strong>Messages</strong>, paste, send to family.</li>
-          </ol>
-          <textarea id="manualCopyBox" readonly rows="3" aria-label="Your message — tap it, select all, then copy"></textarea>
-          <div class="actions">
-            <button class="btn btn-secondary" id="helpCopyBtn" type="button">Copy message</button>
-          </div>
-          <p class="sms-help-small">Blank “sms:” page? Press <strong>Back</strong> — your message is still here.</p>
-        </div>
-      </details>
-      <p style="font-size:.82rem;color:#e8d5d9;margin:10px 0 0">Not safe to text? Stay quiet, follow staff.</p>
-    </div>
-
-    <div class="calm-zone">
-      <div class="calm-kicker">When it’s truly over — no rush</div>
-      <p>Tap <strong>twice</strong>. Only when staff say it’s over.</p>
-      <button class="allclear-btn" data-type="allclear" id="allClearBtn" aria-describedby="confirmNote">
-        <span class="icon" aria-hidden="true">●</span>
-        <span><span class="title">All clear — lockdown lifted, I’m okay</span><span class="sub">Tap twice to send</span></span>
-      </button>
-    </div>
-  </section>
-
-  <!-- GUIDE — every step, note and explainer lives behind this one clear button.
-       The emergency screen above is the whole app in the moment: tap a reason,
-       then Text family now. This panel is opened only when calm, at home. -->
-  <div class="guide-wrap">
+  <!-- GUIDE — START HERE, ABOVE 911: every step, note and explainer lives
+       behind this one clear button, and it sits FIRST on the page because it
+       says "start here — do this first". Until setup is done it stays up
+       here, big and impossible to miss. ONCE SETUP IS DONE it drops below
+       the alert buttons and shrinks into this same small ☰ hamburger entry,
+       there only for future editing (see placeGuide in the script). This
+       panel is opened only when calm, at home. -->
+  <div class="guide-wrap" id="guideWrap">
   <button class="guide-cta" id="guideToggle" type="button" aria-expanded="false" aria-controls="guidePanel">
-    <span class="guide-cta-badge" aria-hidden="true">★ Start here — do this first</span>
+    <span class="guide-cta-badge" id="guideCtaBadge" aria-hidden="true">★ Start here — do this first</span>
     <span class="guide-cta-icon" aria-hidden="true">☰</span>
-    <span class="guide-cta-text"><strong>How to set up / use</strong><span>Set up once, at home. Open only when calm.</span></span>
+    <span class="guide-cta-text"><strong id="guideCtaTitle">How to set up / use</strong><span id="guideCtaSub">Set up once, at home. Open only when calm.</span></span>
     <span class="guide-cta-chev" aria-hidden="true">▾</span>
   </button>
   </div>
@@ -660,6 +585,97 @@ body.has-sticky .toast{bottom:132px}
 
   <p class="footer"><span class="brand-line"><strong>Family FlashLine</strong> — <span class="brand-line-sub">Family lockdown alert</span></span><br>Made with ♥ for families. You always press Send.</p>
   </div><!-- /guidePanel -->
+
+  <div class="emergency" role="note">
+    <div><strong>In immediate danger?</strong> <span style="color:var(--muted)">Call 911 first.</span></div>
+    <a href="tel:911">Call 911</a>
+  </div>
+
+  <div class="open-strip" role="note">Open in your phone's browser — buttons work there.</div>
+
+  <!-- ALERTS -->
+  <section class="card" id="alerts" aria-labelledby="alerts-h" style="padding-bottom:18px">
+    <h2 id="alerts-h">Tap one — it texts your family</h2>
+    <p class="hint">Tap once — press <strong>Send</strong> in Messages. <strong>“Don’t know” is okay.</strong></p>
+
+    <div class="alerts" role="group" aria-label="Lockdown alert types">
+      <button class="alert-btn red" data-type="shooter">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Shooter / Weapon</span><span class="sub">Gun or weapon</span></span>
+      </button>
+
+      <button class="alert-btn dark" data-type="bomb">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Bomb threat</span><span class="sub">Bomb or explosive</span></span>
+      </button>
+
+      <button class="alert-btn orange" data-type="fight">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Fight on campus</span><span class="sub">Fight or disturbance</span></span>
+      </button>
+
+      <button class="alert-btn amber" data-type="unknown">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Lockdown</span><span class="title">Don’t know why</span><span class="sub">No reason given yet</span></span>
+      </button>
+
+      <button class="alert-btn green" data-type="safe">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="kicker">Check-in — tap twice</span><span class="title">I’m SAFE</span><span class="sub">Tap twice to send</span></span>
+      </button>
+
+      <button class="alert-btn outline" data-type="help">
+        <span class="icon" aria-hidden="true">!</span>
+        <span><span class="kicker">Urgent</span><span class="title">Need HELP</span><span class="sub">I need help now</span></span>
+      </button>
+    </div>
+
+    <div class="confirm-note" id="confirmNote" role="status" aria-live="polite"></div>
+
+    <div class="recipient-bar" id="recipientBar" hidden>
+      <span class="recipient-label" id="recipientLabel">Send to — pick one</span>
+      <div class="recipient-chips" id="recipientChips" role="group" aria-labelledby="recipientLabel"></div>
+    </div>
+
+    <div class="preview" id="previewBox" aria-live="polite">
+      <label for="previewText">Your message</label>
+      <div class="preview-block" id="previewBlock" role="alert"><strong>Add a family number first.</strong><span>Add one in setup — step 3. School is optional.</span></div>
+      <div class="preview-text" id="previewText">Add a number to see your message.</div>
+      <p id="senderLine" style="font-size:.82rem;color:#e8d5d9;margin:8px 0 0">No nickname — family knows your number.</p>
+      <div class="final-step"><span aria-hidden="true" style="font-size:1.25rem;line-height:1">♥</span><span><strong>Last step</strong> — tap to text family.</span></div>
+      <div class="actions">
+        <a class="btn btn-direct" id="openBtn" href="sms:">♥ Text family now</a>
+      </div>
+      <p style="font-size:.9rem;color:#ffe3e7;margin:2px 0 0">Opens Messages — press <strong>Send</strong> there.</p>
+      <p class="action-status" id="actionStatus" role="status" aria-live="polite"></p>
+      <details class="fallback-details" id="pasteSteps">
+        <summary>Messages didn’t open? Copy &amp; paste backup</summary>
+        <div class="paste-steps">
+          <ol>
+            <li>Tap <strong>Copy message</strong> below.</li>
+            <li>Open <strong>Messages</strong>, paste, send to family.</li>
+          </ol>
+          <textarea id="manualCopyBox" readonly rows="3" aria-label="Your message — tap it, select all, then copy"></textarea>
+          <div class="actions">
+            <button class="btn btn-secondary" id="helpCopyBtn" type="button">Copy message</button>
+          </div>
+          <p class="sms-help-small">Blank “sms:” page? Press <strong>Back</strong> — your message is still here.</p>
+        </div>
+      </details>
+      <p style="font-size:.82rem;color:#e8d5d9;margin:10px 0 0">Not safe to text? Stay quiet, follow staff.</p>
+    </div>
+
+    <div class="calm-zone">
+      <div class="calm-kicker">When it’s truly over — no rush</div>
+      <p>Tap <strong>twice</strong>. Only when staff say it’s over.</p>
+      <button class="allclear-btn" data-type="allclear" id="allClearBtn" aria-describedby="confirmNote">
+        <span class="icon" aria-hidden="true">●</span>
+        <span><span class="title">All clear — lockdown lifted, I’m okay</span><span class="sub">Tap twice to send</span></span>
+      </button>
+    </div>
+  </section>
+
+
 </div>
 
 <div class="sticky-send" id="stickySend" hidden role="region" aria-label="Ready to send">
@@ -1158,7 +1174,7 @@ body.has-sticky .toast{bottom:132px}
   // DIRECT SEND: tapping a reason hands the sms: link to the phone right
   // away, from inside the tap itself, so Messages opens with the text
   // already filled in. This works in Chrome (Android) and Safari (iPhone).
-  // In some in-app viewers the same jump can land on a blank page, which
+  // Inside the in-app viewer app view the same jump can land on a blank page, which
   // is why the page leads with the "Open in Chrome / Safari" step at the
   // top — that is the direct route, not copy-and-paste.
   function setupMissing(){
@@ -1167,8 +1183,8 @@ body.has-sticky .toast{bottom:132px}
     return contactsWithNumbers().length === 0;
   }
   function blockForSetup(){
-    setStatus('Add a family number in setup below first.');
-    showToast('Add a family number first — setup below.');
+    setStatus('Add a family number in setup first.');
+    showToast('Add a family number first — opening setup.');
     showSetupForm();
     // Land INSTANTLY on the one field that matters, pinned to the top of
     // the screen — never a long animated scroll through the whole guide
@@ -1236,6 +1252,39 @@ body.has-sticky .toast{bottom:132px}
         : 'This visit only — browser clears it on refresh. Tucked away.';
     }
   }
+  // START-HERE PLACEMENT: while setup is NOT done, the guide button and its
+  // panel live at the very top of the page, above the 911 bar — the button
+  // says "start here, do this first", so it goes first. The moment setup is
+  // done, both drop below the alert buttons and the button shrinks into the
+  // small ☰ hamburger entry (is-done), kept only for future editing.
+  function placeGuide(){
+    var gw = document.getElementById('guideWrap');
+    var panel = document.getElementById('guidePanel');
+    if(!gw || !panel) return;
+    var wrap = gw.parentNode;
+    if(!wrap) return;
+    var title = document.getElementById('guideCtaTitle');
+    var sub = document.getElementById('guideCtaSub');
+    if(setupDone){
+      var alerts = document.getElementById('alerts');
+      if(alerts && alerts.parentNode === wrap){
+        wrap.insertBefore(gw, alerts.nextSibling);
+        wrap.insertBefore(panel, gw.nextSibling);
+      }
+      gw.classList.add('is-done');
+      if(title) title.textContent = 'Setup & guide';
+      if(sub) sub.textContent = 'All set — tap to edit your setup if you ever need to.';
+    } else {
+      var emergency = wrap.querySelector('.emergency');
+      if(emergency){
+        wrap.insertBefore(gw, emergency);
+        wrap.insertBefore(panel, gw.nextSibling);
+      }
+      gw.classList.remove('is-done');
+      if(title) title.textContent = 'How to set up / use';
+      if(sub) sub.textContent = 'Set up once, at home. Open only when calm.';
+    }
+  }
   function setGuideOpen(open){
     var panel = document.getElementById('guidePanel');
     var toggle = document.getElementById('guideToggle');
@@ -1253,6 +1302,7 @@ body.has-sticky .toast{bottom:132px}
     refreshSaveModeUI();
   }
   function hideSetupForm(){
+    placeGuide();
     setGuideOpen(false);
     if(setupFormWrap) setupFormWrap.hidden = true;
     if(setupDone){
