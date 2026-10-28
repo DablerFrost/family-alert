@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#7c2340">
+<meta name="theme-color" content="#074f4f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Family FlashLine — Family Lockdown Alert">
@@ -43,10 +43,10 @@
   :root{ --bg:#1d1417; --surface:#2a1e22; --surface2:#33241f; --ink:#fbf1ec; --muted:#cdb4b8; --line:#443237; --love:#e88aa4; --love-deep:#f3b3c4; --love-bg:#382128; --love-soft:#382128; --red-bg:#3a1714; --red-ink:#ffb4ab; --amber-bg:#332a0f; --orange-bg:#331f0f; --green-bg:#12351d; --blue-bg:#382128; }
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%;background:#dff7f8}
 html[data-text="large"]{font-size:20px}
 html[data-text="xlarge"]{font-size:25px}
-body{margin:0;background:var(--bg);color:var(--ink);font-family: ui-sans-system, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;line-height:1.45;overflow-wrap:break-word}
+body{margin:0;background:#dff7f8;color:var(--ink);font-family: ui-sans-system, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;line-height:1.45;overflow-wrap:break-word}
 /* Large-text / Dynamic Type safety: nothing truncates, buttons wrap and grow.
    Labels wrap BETWEEN words only — never mid-word (no "Shoot/er", "camp/us"). */
 .alert-btn,.btn,.emergency a{white-space:normal;word-break:normal}
@@ -63,11 +63,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family: ui-sans-system,
 .ios-hint strong{color:inherit}
 .platform-pill{display:block;width:fit-content;position:relative;z-index:2;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--muted);margin-top:6px}
 a{color:var(--blue)}
-.topbar{background:var(--love-deep);color:#fff;padding:14px 16px;display:flex;gap:12px;align-items:center;border-bottom:5px solid var(--yellow);box-shadow:0 4px 18px rgba(124,35,64,.35)}
-.topbar .heart-badge{width:44px;height:44px;background:var(--yellow);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3125rem;flex:0 0 auto;color:var(--love-deep);box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.topbar{background:var(--teal-deep);color:#fff;padding:14px 16px;display:flex;gap:12px;align-items:center;border-bottom:5px solid var(--yellow);box-shadow:0 4px 18px rgba(7,79,79,.35)}
+.topbar .heart-badge{width:44px;height:44px;background:var(--yellow);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3125rem;flex:0 0 auto;color:var(--teal-deep);box-shadow:0 2px 10px rgba(0,0,0,.3)}
 .topbar h1{margin:0;font-size:1.375rem;line-height:1.05;letter-spacing:-.02em}
 .topbar .brand-subtitle{margin:4px 0 0;color:var(--yellow);font-size:1.0312rem;font-weight:900;line-height:1.2;letter-spacing:.01em}
-.topbar p{margin:3px 0 0;color:#ffe3e7;font-size:0.8438rem;line-height:1.35}
+.topbar p{margin:3px 0 0;color:#e8fffc;font-size:0.8438rem;line-height:1.35}
 .brand-line{font-size:0.9375rem;line-height:1.4;color:var(--ink)}
 .brand-line strong{font-size:1.0312rem;color:var(--ink)}
 .brand-line .brand-line-sub{font-weight:800;color:var(--love-deep)}
@@ -103,6 +103,22 @@ input,textarea{scroll-margin-top:12px}
 .trust-row span b{color:var(--love);font-weight:900;margin-right:2px}
 .optional-room{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
 .optional-room summary{cursor:pointer;font-weight:700;font-size:0.9062rem;color:var(--love);min-height:32px}
+/* More section toggles: real button-shaped pills, not pink text links.
+   Scoped to #more only — alert buttons and every other control keep
+   their existing colours and behaviour. Bright filled pink, big touch
+   target, white chevron disc that flips when open, and a clear press
+   reaction: brighten + shrink slightly + shadow drops on tap. */
+#more .optional-room{margin-top:14px;border-top:0;padding-top:0}
+#more .optional-room summary{list-style:none;display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:16px 14px 16px 20px;background:linear-gradient(180deg,#e0447c,#c12755);color:#fff;font-size:1.125rem;font-weight:900;line-height:1.25;letter-spacing:-.01em;border:2.5px solid #8f1d3f;border-radius:999px;box-shadow:0 8px 20px rgba(193,39,85,.42),inset 0 1px 0 rgba(255,255,255,.38);touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .12s ease,box-shadow .12s ease,filter .12s ease,background .12s ease}
+#more .optional-room summary::-webkit-details-marker{display:none}
+#more .optional-room summary::marker{content:""}
+#more .optional-room summary::after{content:"▾";flex:0 0 auto;margin-left:auto;width:38px;height:38px;border-radius:50%;background:#fff;color:#a11c44;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:900;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.28);transition:transform .18s ease}
+#more .optional-room[open ] summary::after{transform:rotate(180deg)}
+#more .optional-room summary:hover{filter:brightness(1.13);box-shadow:0 10px 24px rgba(193,39,85,.52),inset 0 1px 0 rgba(255,255,255,.45)}
+#more .optional-room summary:active{transform:scale(.97);filter:brightness(1.22);box-shadow:0 3px 8px rgba(193,39,85,.45),inset 0 2px 6px rgba(0,0,0,.22)}
+#more .optional-room summary:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+@media (prefers-reduced-motion: reduce){#more .optional-room summary,#more .optional-room summary::after{transition:none}#more .optional-room summary:active{transform:none}}
+@media(max-width:420px){#more .optional-room summary{font-size:1.0625rem;padding:15px 12px 15px 17px;min-height:58px}}
 .optional-room label{margin-top:8px}
 .friendly{line-height:1.45}
 .warm-lede{font-size:1rem;line-height:1.55;color:var(--ink)}
@@ -380,6 +396,10 @@ body.has-sticky .toast{bottom:132px}
 .install-done{margin:12px 0 0;padding-top:10px;border-top:1px dashed var(--line);font-size:.9375rem;line-height:1.45}
 .install-done strong{color:var(--teal-deep)}
 @media (prefers-color-scheme: dark){.install-done strong{color:var(--teal-bright)}}
+/* Surrounding page background is light cyan (set on html/body above) —
+   the area outside the central content column. The guide detail boxes
+   keep their normal card tones (--surface / --surface2 etc.) so they
+   stand out against that light cyan background. */
 </style>
 </head>
 <body>
@@ -413,8 +433,8 @@ body.has-sticky .toast{bottom:132px}
   <!-- INSTALL — step 0: put it on the Home Screen first. That is what makes
        setup save on this device. Two boxes, three taps each, one line a step. -->
   <section class="card install-card" aria-labelledby="install-h">
-    <h2 id="install-h">Add it to your Home Screen</h2>
-    <p class="hint" style="font-size:.9375rem;color:var(--ink)"><strong>20 seconds. No app store, no download.</strong><br>Do this first — it’s what makes your setup save on this phone.</p>
+    <h2 id="install-h">Put an icon on your phone’s home screen</h2>
+    <p class="hint" style="font-size:.9375rem;color:var(--ink)"><strong>20 seconds. No app store, no download.</strong><br>Your home screen is the first screen you see on your phone — the one with all your app icons. Adding Family FlashLine there puts a tappable icon next to your other apps, so you can open it in one tap without opening a browser first. Do this first — it’s also what makes your setup save on this phone.</p>
     <div class="install-grid">
       <div class="install-box" id="installIos">
         <h3>iPhone<span class="install-you">Your phone</span></h3>
@@ -437,7 +457,7 @@ body.has-sticky .toast{bottom:132px}
         <p class="install-done"><strong>Done.</strong> A Family FlashLine icon is now on your Home Screen — open it from there.</p>
       </div>
     </div>
-    <p class="small friendly" style="margin-top:12px"><strong>Tablet?</strong> Same steps as your phone above. <strong>Computer?</strong> No Home Screen — just bookmark this page.</p>
+    <p class="small friendly" style="margin-top:12px"><strong>Tablet?</strong> Same steps as your phone above. <strong>Computer?</strong> Computers don’t have that home-screen icon — just bookmark this page instead.</p>
   </section>
 
   <!-- SETUP — one-time only: a slim entry when not set up, a single ready line once done -->
@@ -457,9 +477,9 @@ body.has-sticky .toast{bottom:132px}
       <span class="setup-heart" aria-hidden="true" style="background:var(--green)">♥</span>
       <div class="setup-state-text">
         <strong id="setupDoneText">Ready — setup done</strong>
-        <span id="setupDoneSub">Tucked away. Use the buttons above.</span>
+        <span id="setupDoneSub">All set — tucked away in this menu, hidden from the main screen.</span>
       </div>
-      <button class="btn btn-ghost" id="setupEditBtn" type="button">Edit setup</button>
+      <button class="btn btn-ghost" id="setupEditBtn" type="button">Update my setup</button>
     </div>
 
     <div id="setupFormWrap" hidden>
@@ -524,8 +544,8 @@ body.has-sticky .toast{bottom:132px}
       <span><b>♥</b> iPhone &amp; Android</span>
     </div>
     <div class="note" role="note" aria-label="What is saved" style="margin-top:14px">
-      <strong>What’s saved:</strong> Home Screen — nickname, school &amp; numbers stay on this device only. Never uploaded.<br>
-      Browser — nothing saved. Refresh clears it.
+      <strong>What’s saved:</strong> If you open Family FlashLine from the icon on your phone’s home screen — nickname, school &amp; numbers stay on this device only. Never uploaded.<br>
+      If you open it in a browser tab instead — nothing is saved. Refresh clears it.
     </div>
     <span class="platform-pill" id="platformPill">Getting your phone ready…</span>
     <div class="ios-hint" id="iosGroupHint"><strong>iPhone tip:</strong> Group text opens blank? Go back, tap the reason again.</div>
@@ -577,9 +597,10 @@ body.has-sticky .toast{bottom:132px}
     </details>
 
     <details class="optional-room">
-      <summary>Home Screen, watch &amp; car</summary>
-      <p style="font-size:.94rem;line-height:1.6;margin:8px 0 0"><strong>Phone &amp; tablet:</strong> Steps are at the top of this guide — <strong>“Add it to your Home Screen.”</strong></p>
-      <p style="font-size:.94rem;line-height:1.6;margin:8px 0 0"><strong>Watch &amp; car:</strong> Nothing to set up — alerts are normal texts, so they mirror automatically.</p>
+      <summary>Will I see alerts on my watch or in my car?</summary>
+      <p style="font-size:.94rem;line-height:1.6;margin:8px 0 0"><strong>On your phone or tablet:</strong> Nothing changes about the alerts themselves. The steps at the top of this guide — <strong>“Put an icon on your phone’s home screen”</strong> — just add a one-tap icon alongside your other apps, so you don’t have to open a browser first.</p>
+      <p style="font-size:.94rem;line-height:1.6;margin:8px 0 0"><strong>On a smartwatch (Apple Watch, Galaxy Watch and similar):</strong> There is nothing to install on the watch and nothing to set up there. Family FlashLine sends ordinary text messages — so if your watch already buzzes or shows your texts, these alerts will show there too, exactly like any other text.</p>
+      <p style="font-size:.94rem;line-height:1.6;margin:8px 0 0"><strong>In the car (Apple CarPlay / Android Auto):</strong> Same idea — nothing to install in the car. If your car already shows your texts or reads them out loud when your phone is connected, these alerts will come through there too, exactly like any other text.</p>
     </details>
   </section>
 
@@ -832,8 +853,8 @@ body.has-sticky .toast{bottom:132px}
     var line = document.getElementById('saveModeLine');
     if(line){
       line.textContent = isInstalledApp()
-        ? 'Home Screen: Done saves setup on this device only. Never uploaded.'
-        : 'Browser: setup clears on refresh. To save it, Add to Home Screen first.';
+        ? 'Opened from your home-screen icon: Done saves setup on this device only. Never uploaded.'
+        : 'Opened in a browser tab: setup clears on refresh. To save it, put the icon on your home screen first (steps at the top of this guide).';
     }
   }
   function phoneList(){
@@ -1248,8 +1269,8 @@ body.has-sticky .toast{bottom:132px}
     }
     if(setupDoneSub){
       setupDoneSub.textContent = setupSavedNative
-        ? 'Saved on this device. Tucked away.'
-        : 'This visit only — browser clears it on refresh. Tucked away.';
+        ? 'Saved on this device. Hidden from the main screen — you’ll only find it here, in this ☰ menu.'
+        : 'This visit only — browser clears it on refresh. Hidden from the main screen — you’ll only find it here, in this ☰ menu.';
     }
   }
   // START-HERE PLACEMENT: while setup is NOT done, the guide button and its
@@ -1272,8 +1293,8 @@ body.has-sticky .toast{bottom:132px}
         wrap.insertBefore(panel, gw.nextSibling);
       }
       gw.classList.add('is-done');
-      if(title) title.textContent = 'Setup & guide';
-      if(sub) sub.textContent = 'All set — tap to edit your setup if you ever need to.';
+      if(title) title.textContent = 'Menu — Update my setup';
+      if(sub) sub.textContent = 'All set — setup is hidden now. Tap this ☰ menu only to change family numbers, nickname or school.';
     } else {
       var emergency = wrap.querySelector('.emergency');
       if(emergency){
